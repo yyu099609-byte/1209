@@ -3224,17 +3224,36 @@ Daddy参考：乖宝宝、摸头、怎么了，嗯？
 
 window.changeAvatar = function(side) {
     globalSafeImageInput.onchange = e => {
-        if (!e.target.files[0]) return;
+
+        const file = e.target.files[0];
+        if (!file) return;
+
         const reader = new FileReader();
-        reader.onload = ev => {
+
+        reader.onload = function(ev) {
+
+            const imgSrc = ev.target.result;
+
+            // 设置UI
             const el = document.getElementById(`avatar-${side}`);
-            if(el) el.setAttribute('src', ev.target.result);
-            // 【核心修复】：换完图立刻强制存档，防止闪烁变回原样！
-            setTimeout(performGlobalSave, 50); 
+            if (el) el.src = imgSrc;
+
+            // 如果是自己头像，同步右下角
+            if (side === 'me') {
+                const rightAvatar = document.getElementById('char-phone-right-avatar');
+                if (rightAvatar) rightAvatar.src = imgSrc;
+
+                localStorage.setItem('vip_my_avatar', imgSrc);
+            }
+
+            // 强制保存
+            saveAllAvatars();
         };
-        reader.readAsDataURL(e.target.files[0]);
+
+        reader.readAsDataURL(file);
         globalSafeImageInput.value = '';
     };
+
     globalSafeImageInput.click();
 };
 function updateGlobalAvatar(src) {
@@ -8598,11 +8617,30 @@ function openCharacterPhone(friend) {
         leftAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
 
-    const rightAvatar = document.getElementById('char-phone-right-avatar');
-    if(rightAvatar) {
-        // 【头像修复】：强制读取最新保存的用户微信头像
-        rightAvatar.src = localStorage.getItem('vip_my_avatar') || (typeof userProfile !== 'undefined' ? userProfile.avatar : '') || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
+const rightAvatar = document.getElementById('char-phone-right-avatar');
+if (rightAvatar) {
+
+    let avatarSrc = '';
+
+    // 优先读本地保存
+    avatarSrc = localStorage.getItem('vip_my_avatar');
+
+    // 如果本地没有，用 userProfile
+    if (!avatarSrc) {
+        if (typeof userProfile !== 'undefined' && userProfile.avatar) {
+            avatarSrc = userProfile.avatar;
+            localStorage.setItem('vip_my_avatar', avatarSrc);
+        }
     }
+
+    // 如果还是没有，用默认图
+    if (!avatarSrc) {
+        avatarSrc = 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
+    }
+
+    // 强制赋值
+    rightAvatar.src = avatarSrc;
+}
 
     // 初始化壁纸
     const screen = document.getElementById('character-phone-screen');
@@ -9558,6 +9596,54 @@ async function executeAutoMomentPost(friend) {
         feed.prepend(div);
     } catch(e) { console.error("AI自动发朋友圈失败:", e); }
 }
+function saveAllAvatars() {
+    try {
+        const me = document.getElementById('wx-me-avatar');
+        if (me && me.src) {
+            localStorage.setItem('vip_my_avatar', me.src);
+        }
+
+        const left = document.getElementById('avatar-left');
+        if (left && left.src) {
+            localStorage.setItem('avatar_left', left.src);
+        }
+
+        const right = document.getElementById('avatar-right');
+        if (right && right.src) {
+            localStorage.setItem('avatar_right', right.src);
+        }
+
+    } catch (e) {
+        console.log('保存失败', e);
+    }
+}
+window.onload = function () {
+
+    const savedMe = localStorage.getItem('vip_my_avatar');
+
+    const me = document.getElementById('wx-me-avatar');
+    if (me && savedMe) {
+        me.src = savedMe;
+    }
+
+    const rightAvatar = document.getElementById('char-phone-right-avatar');
+    if (rightAvatar && savedMe) {
+        rightAvatar.src = savedMe;
+    }
+
+    const left = document.getElementById('avatar-left');
+    if (left) {
+        const l = localStorage.getItem('avatar_left');
+        if (l) left.src = l;
+    }
+
+    const right = document.getElementById('avatar-right');
+    if (right) {
+        const r = localStorage.getItem('avatar_right');
+        if (r) right.src = r;
+    }
+
+};
 </script>
 </body>
 </html>
