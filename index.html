@@ -1708,8 +1708,8 @@ openPlaylist();">
             <div class="flex w-full px-[20px] mt-2 gap-4 items-stretch">
                 
                 <div class="flex-1 bg-[#e5e5eab3] backdrop-blur-md border border-white/50 rounded-[30px] p-4 flex flex-col justify-between shadow-sm mb-[22px]">
-                    <div class="w-[42px] h-[42px] rounded-full overflow-hidden border-[2px] border-white shadow-sm self-start flex-shrink-0 bg-gray-300">
-                        <img id="char-phone-left-avatar" src="https://i.postimg.cc/76N2w5M7/IMG_2980.jpg" class="w-full h-full object-cover">
+                    <div class="w-[42px] h-[42px] rounded-full overflow-hidden border-[2px] border-white shadow-sm self-end flex-shrink-0 bg-gray-300">
+                        <img id="char-phone-right-avatar" src="" class="w-full h-full object-cover">
                     </div>
                     
                     <div class="flex flex-col items-center justify-center my-2 cursor-pointer active:scale-95 transition-transform" onclick="openDateWidgetModal()">
@@ -2677,17 +2677,43 @@ function performGlobalSave() {
 // 1. 常规每隔1秒钟偷偷保存
 setInterval(performGlobalSave, 1000);
 
-// 2. 苹果系统专属救命稻草：在你上滑杀后台、切回桌面的那一瞬间，强制瞬间保存！
+// 2. 苹果系统专属救命稻草：杀后台瞬间强制保存
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') performGlobalSave();
 });
 window.addEventListener('pagehide', performGlobalSave);
 
-// 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
-const savedConfig = JSON.parse(localStorage.getItem('os_config'));
-if (savedConfig) {
-    config = { ...config, ...savedConfig };
-}  // 记住是否正在多选
+// 3. 【核心修复】：页面加载时自动还原所有图片、头像、背景和文字
+window.addEventListener('load', () => {
+    // 还原基础配置
+    const savedConfig = JSON.parse(localStorage.getItem('os_config'));
+    if (savedConfig) config = { ...config, ...savedConfig };
+
+    // 还原所有手动改过的图片、图标和文字
+    const savedCustomState = JSON.parse(localStorage.getItem('os_custom_dom_state'));
+    if (savedCustomState) {
+        for (const key in savedCustomState) {
+            const el = document.getElementById(key.replace('_html', '').replace('_bg', ''));
+            if (!el) continue;
+            if (key.endsWith('_html')) {
+                el.innerHTML = savedCustomState[key];
+            } else if (key.endsWith('_bg')) {
+                el.style.backgroundImage = savedCustomState[key];
+            } else {
+                el.src = savedCustomState[key];
+            }
+        }
+    }
+    
+    // 还原桌面壁纸
+    const savedDesktopBg = localStorage.getItem('os_desktop_bg');
+    if (savedDesktopBg) document.getElementById('desktop-body').style.backgroundImage = savedDesktopBg;
+    
+    // 特别还原查手机右下角头像
+    const rightAvatar = document.getElementById('char-phone-right-avatar');
+    if (rightAvatar && userProfile.avatar) rightAvatar.src = userProfile.avatar;
+});
+  // 记住是否正在多选
 let selectedMsgIndices = new Set(); // 记住多选了哪些消息
 let currentQuoteMsg = null;
 // 记住正在引用哪句话
@@ -3224,36 +3250,17 @@ Daddy参考：乖宝宝、摸头、怎么了，嗯？
 
 window.changeAvatar = function(side) {
     globalSafeImageInput.onchange = e => {
-
-        const file = e.target.files[0];
-        if (!file) return;
-
+        if (!e.target.files[0]) return;
         const reader = new FileReader();
-
-        reader.onload = function(ev) {
-
-            const imgSrc = ev.target.result;
-
-            // 设置UI
+        reader.onload = ev => {
             const el = document.getElementById(`avatar-${side}`);
-            if (el) el.src = imgSrc;
-
-            // 如果是自己头像，同步右下角
-            if (side === 'me') {
-                const rightAvatar = document.getElementById('char-phone-right-avatar');
-                if (rightAvatar) rightAvatar.src = imgSrc;
-
-                localStorage.setItem('vip_my_avatar', imgSrc);
-            }
-
-            // 强制保存
-            saveAllAvatars();
+            if(el) el.setAttribute('src', ev.target.result);
+            // 【核心修复】：换完图立刻强制存档，防止闪烁变回原样！
+            setTimeout(performGlobalSave, 50); 
         };
-
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(e.target.files[0]);
         globalSafeImageInput.value = '';
     };
-
     globalSafeImageInput.click();
 };
 function updateGlobalAvatar(src) {
@@ -8617,30 +8624,11 @@ function openCharacterPhone(friend) {
         leftAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
 
-const rightAvatar = document.getElementById('char-phone-right-avatar');
-if (rightAvatar) {
-
-    let avatarSrc = '';
-
-    // 优先读本地保存
-    avatarSrc = localStorage.getItem('vip_my_avatar');
-
-    // 如果本地没有，用 userProfile
-    if (!avatarSrc) {
-        if (typeof userProfile !== 'undefined' && userProfile.avatar) {
-            avatarSrc = userProfile.avatar;
-            localStorage.setItem('vip_my_avatar', avatarSrc);
-        }
+    const rightAvatar = document.getElementById('char-phone-right-avatar');
+    if(rightAvatar) {
+        // 【头像修复】：强制读取最新保存的用户微信头像
+        rightAvatar.src = localStorage.getItem('vip_my_avatar') || (typeof userProfile !== 'undefined' ? userProfile.avatar : '') || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
     }
-
-    // 如果还是没有，用默认图
-    if (!avatarSrc) {
-        avatarSrc = 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
-    }
-
-    // 强制赋值
-    rightAvatar.src = avatarSrc;
-}
 
     // 初始化壁纸
     const screen = document.getElementById('character-phone-screen');
@@ -9596,54 +9584,6 @@ async function executeAutoMomentPost(friend) {
         feed.prepend(div);
     } catch(e) { console.error("AI自动发朋友圈失败:", e); }
 }
-function saveAllAvatars() {
-    try {
-        const me = document.getElementById('wx-me-avatar');
-        if (me && me.src) {
-            localStorage.setItem('vip_my_avatar', me.src);
-        }
-
-        const left = document.getElementById('avatar-left');
-        if (left && left.src) {
-            localStorage.setItem('avatar_left', left.src);
-        }
-
-        const right = document.getElementById('avatar-right');
-        if (right && right.src) {
-            localStorage.setItem('avatar_right', right.src);
-        }
-
-    } catch (e) {
-        console.log('保存失败', e);
-    }
-}
-window.onload = function () {
-
-    const savedMe = localStorage.getItem('vip_my_avatar');
-
-    const me = document.getElementById('wx-me-avatar');
-    if (me && savedMe) {
-        me.src = savedMe;
-    }
-
-    const rightAvatar = document.getElementById('char-phone-right-avatar');
-    if (rightAvatar && savedMe) {
-        rightAvatar.src = savedMe;
-    }
-
-    const left = document.getElementById('avatar-left');
-    if (left) {
-        const l = localStorage.getItem('avatar_left');
-        if (l) left.src = l;
-    }
-
-    const right = document.getElementById('avatar-right');
-    if (right) {
-        const r = localStorage.getItem('avatar_right');
-        if (r) right.src = r;
-    }
-
-};
 </script>
 </body>
 </html>
