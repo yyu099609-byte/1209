@@ -1952,28 +1952,40 @@ openPlaylist();">
 
 <script>
 // =========================================================================
-// ================= 【终极重构】全面接管式 IndexedDB 引擎 =================
+// ================= 【终极重构】全面接管式 IndexedDB 引擎 (极速防丢版) =================
 // =========================================================================
 
 // 1. 初始化恢复：页面打开瞬间从硬盘最深处拉取所有数据
 window.addEventListener('load', async function() {
     console.log("🚀 启动终极恢复引擎...");
     try {
-        const backup = await localforage.getItem('echo_ultimate_database');
+        // 使用 v3 新仓库，避开之前卡顿的旧数据
+        const backup = await localforage.getItem('echo_ultimate_database_v3');
         if (backup) {
-            // 恢复基础数据
-            if (backup.local) {
-                for (let key in backup.local) {
-                    try { localStorage.setItem(key, backup.local[key]); } catch(e) {}
-                }
-                if (backup.local['os_user_profile']) userProfile = JSON.parse(backup.local['os_user_profile']);
-                if (backup.local['friend_list']) friendList = JSON.parse(backup.local['friend_list']);
-                if (backup.local['os_config']) config = JSON.parse(backup.local['os_config']);
+            // 恢复核心变量
+            if (backup.os_user_profile) userProfile = JSON.parse(backup.os_user_profile);
+            if (backup.friend_list) friendList = JSON.parse(backup.friend_list);
+            if (backup.os_config) config = JSON.parse(backup.os_config);
+
+            // 恢复长列表HTML
+            if (backup.os_moments_html) {
+                let el = document.getElementById('moments-feed');
+                if (el) el.innerHTML = backup.os_moments_html;
             }
+            if (backup.os_forum_html) {
+                let el = document.getElementById('forum-feed');
+                if (el) el.innerHTML = backup.os_forum_html;
+            }
+            
             // 暴力回填所有文本和图片（解决之前图片文本删后台丢失问题）
             if (backup.memory) {
                 window.my_safe_dom_cache = backup.memory;
+                if (backup.memory['desktop_bg']) {
+                    let db = document.getElementById('desktop-body');
+                    if (db) db.style.backgroundImage = backup.memory['desktop_bg'];
+                }
                 for (let key in backup.memory) {
+                    if (key === 'desktop_bg') continue;
                     try {
                         if (key.endsWith('_html')) {
                             let el = document.getElementById(key.replace('_html', ''));
@@ -1993,29 +2005,74 @@ window.addEventListener('load', async function() {
             if (typeof renderAllMessages === 'function') renderAllMessages(true);
         }
     } catch (error) {}
-    startUltimateObserver(); // 恢复完毕后，开启鹰眼监听
+    
+    // 延迟启动监听，防止刚加载时的卡顿
+    setTimeout(startUltimateObserver, 2000); 
 });
 
-// 2. 核心硬盘直写技术
+// 2. 核心硬盘直写技术 (大幅优化性能，告别卡顿)
 let isSaving = false;
+let lastSaveHash = "";
+
 async function forceSaveToDisk() {
     if (isSaving) return;
     isSaving = true;
     try {
-        let currentLocalStore = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            currentLocalStore[key] = localStorage.getItem(key);
-        }
-        // 绕过 5MB 限制强制抓取变量
-        if (typeof friendList !== 'undefined') currentLocalStore['friend_list'] = JSON.stringify(friendList);
-        if (typeof userProfile !== 'undefined') currentLocalStore['os_user_profile'] = JSON.stringify(userProfile);
-        if (typeof config !== 'undefined') currentLocalStore['os_config'] = JSON.stringify(config);
+        // 【核心修复】：把丢失的 DOM 抓取逻辑加回来！否则头像和背景根本没存！
+        let customDOMState = {};
+        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
         
-        await localforage.setItem('echo_ultimate_database', {
-            local: currentLocalStore,
-            memory: window.my_safe_dom_cache || {}
+        editableElements.forEach((el, index) => {
+            if (!el.id) el.id = 'auto_save_id_' + index;
+            if (el.tagName === 'IMG') {
+                customDOMState[el.id] = el.src;
+            } else {
+                customDOMState[el.id + '_html'] = el.innerHTML;
+                if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
+            }
         });
+
+        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
+        specialIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) customDOMState[id + '_html'] = el.innerHTML;
+        });
+
+        const desktopBody = document.getElementById('desktop-body');
+        if (desktopBody && desktopBody.style.backgroundImage) {
+             customDOMState['desktop_bg'] = desktopBody.style.backgroundImage;
+        }
+
+        window.my_safe_dom_cache = customDOMState;
+
+        // 打包核心数据 (不再去遍历读取导致死机的整个 localStorage)
+        let dataToSave = {
+            memory: customDOMState,
+            os_user_profile: typeof userProfile !== 'undefined' ? JSON.stringify(userProfile) : '',
+            friend_list: typeof friendList !== 'undefined' ? JSON.stringify(friendList) : '',
+            os_config: typeof config !== 'undefined' ? JSON.stringify(config) : ''
+        };
+
+        const mf = document.getElementById('moments-feed');
+        if (mf) dataToSave.os_moments_html = mf.innerHTML;
+        const ff = document.getElementById('forum-feed');
+        if (ff) dataToSave.os_forum_html = ff.innerHTML;
+
+        // 计算长度，如果没变化就不重复写硬盘，极其省电和防卡顿
+        let currentHash = (dataToSave.friend_list?.length || 0) + "_" + Object.keys(customDOMState).length;
+        
+        if (currentHash !== lastSaveHash) {
+            await localforage.setItem('echo_ultimate_database_v3', dataToSave);
+            lastSaveHash = currentHash;
+        }
+        
+        // 顺手往旧的 localStorage 备份一份核心数据（套一层 try-catch 防止被 5MB 限制卡爆）
+        try {
+            if (dataToSave.os_user_profile) localStorage.setItem('os_user_profile', dataToSave.os_user_profile);
+            if (dataToSave.friend_list) localStorage.setItem('friend_list', dataToSave.friend_list);
+            if (dataToSave.os_config) localStorage.setItem('os_config', dataToSave.os_config);
+        } catch(e){}
+
     } catch (e) {} finally {
         isSaving = false;
     }
@@ -2026,11 +2083,13 @@ window.performGlobalSave = forceSaveToDisk;
 
 // 4. 鹰眼监听器：只要有风吹草动，立刻保存！
 function startUltimateObserver() {
-    setInterval(forceSaveToDisk, 2000); // 兜底：每2秒存一次
+    setInterval(forceSaveToDisk, 3000); // 间隔放宽到3秒，大幅降低卡顿
+    
+    // 监听DOM变动，使用防抖技术，避免打字时疯狂卡顿
     let saveTimeout;
     const observer = new MutationObserver(() => {
         clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(forceSaveToDisk, 500); // 只要页面字/图变了，0.5秒后立刻存
+        saveTimeout = setTimeout(forceSaveToDisk, 1000); // 等你停手1秒后再存
     });
     observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true });
 }
