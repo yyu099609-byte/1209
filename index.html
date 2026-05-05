@@ -1,67 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="apple-touch-icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
-<link rel="icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="echo">
-
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#f0f0f0">
-<meta name="application-name" content="echo">
-
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<title>echo</title>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-(function () {
-    try {
-        const manifestData = {
-            name: "echo",
-            short_name: "echo",
-            start_url: ".",
-            scope: ".",
-            display: "standalone",
-            orientation: "portrait",
-            background_color: "#f0f0f0",
-            theme_color: "#f0f0f0",
-            icons: [
-                {
-                    src: "https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg",
-                    sizes: "192x192",
-                    type: "image/png"
-                },
-                {
-                    src: "https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg",
-                    sizes: "512x512",
-                    type: "image/png"
-                }
-            ]
-        };
-
-        const manifestBlob = new Blob(
-            [JSON.stringify(manifestData)],
-            { type: "application/manifest+json" }
-        );
-        const manifestURL = URL.createObjectURL(manifestBlob);
-
-        const link = document.createElement("link");
-        link.rel = "manifest";
-        link.href = manifestURL;
-        document.head.appendChild(link);
-    } catch (e) {
-        console.log("manifest 注入失败", e);
-    }
-})();
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
+    <link rel="icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="echo">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f0f0f0">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiZWNobyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMGYwZjAifQ==">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>echo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style id="custom-style">
         /* 终极安卓适配补丁：锁定屏幕的真实可见高度 */
         html, body { height: 100%; width: 100%; overflow: hidden; margin: 0; padding: 0; }
@@ -215,7 +170,7 @@
         .system-msg { text-align: center; font-size: 12px; color: #999; margin: 10px 0; }
     </style>
 </head>
-<body id="desktop-body" class="h-full overflow-hidden flex flex-col bg-cover bg-center transition-all duration-300" style="background-image: none;" data-standalone="false">
+<body id="desktop-body" class="h-full overflow-hidden flex flex-col bg-cover bg-center transition-all duration-300" style="background-image: none;">
 
     <div id="home-screen" class="flex-1 flex overflow-x-auto snap-x snap-mandatory no-scrollbar w-full">
 
@@ -9781,28 +9736,6 @@ setInterval(() => {
     }
 }, 500);
 // =============== 新增：一起听 & 浮窗功能引擎 2.0升级版 结束 =================
-</script>
-<script>
-(function () {
-    function checkStandalone() {
-        const isIosStandalone = window.navigator.standalone === true;
-        const isAndroidStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isStandalone = isIosStandalone || isAndroidStandalone;
-
-        document.body.setAttribute('data-standalone', isStandalone ? 'true' : 'false');
-
-        if (isStandalone) {
-            document.documentElement.style.height = '100vh';
-            document.body.style.height = '100vh';
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    window.addEventListener('load', checkStandalone);
-    window.addEventListener('resize', checkStandalone);
-    window.addEventListener('orientationchange', checkStandalone);
-    document.addEventListener('visibilitychange', checkStandalone);
-})();
 </script>
 </body>
 </html>
