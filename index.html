@@ -1708,8 +1708,8 @@ openPlaylist();">
             <div class="flex w-full px-[20px] mt-2 gap-4 items-stretch">
                 
                 <div class="flex-1 bg-[#e5e5eab3] backdrop-blur-md border border-white/50 rounded-[30px] p-4 flex flex-col justify-between shadow-sm mb-[22px]">
-                    <div class="w-[42px] h-[42px] rounded-full overflow-hidden border-[2px] border-white shadow-sm self-end flex-shrink-0 bg-gray-300">
-                        <img id="char-phone-right-avatar" src="" class="w-full h-full object-cover">
+                    <div class="w-[42px] h-[42px] rounded-full overflow-hidden border-[2px] border-white shadow-sm self-start flex-shrink-0 bg-gray-300">
+                        <img id="char-phone-left-avatar" src="https://i.postimg.cc/76N2w5M7/IMG_2980.jpg" class="w-full h-full object-cover">
                     </div>
                     
                     <div class="flex flex-col items-center justify-center my-2 cursor-pointer active:scale-95 transition-transform" onclick="openDateWidgetModal()">
@@ -2613,107 +2613,82 @@ let friendList = JSON.parse(localStorage.getItem('friend_list')) || [];
 let currentFriendId = null;
 let isMultiSelecting = false;
 
-// 【全自动存档魔法】升级版：加入防杀后台抢救机制与内存报警
+// 【全自动深度存档系统】—— 彻底解决删后台失效问题
 function performGlobalSave() {
     try {
-        // 基础核心数据保存
+        // A. 核心数据同步
         localStorage.setItem('os_user_profile', JSON.stringify(userProfile));
         localStorage.setItem('friend_list', JSON.stringify(friendList));
         localStorage.setItem('os_config', JSON.stringify(config));
         
-        // 1. 保存音乐列表和点赞状态
+        // B. 特殊组件状态
         if (typeof playlist !== 'undefined') localStorage.setItem('os_playlist', JSON.stringify(playlist));
         if (typeof momentLikes !== 'undefined') localStorage.setItem('os_moment_likes', JSON.stringify(momentLikes));
         
-        // 2. 保存朋友圈和论坛推文的画面
-        const momentsFeed = document.getElementById('moments-feed');
-        if (momentsFeed) localStorage.setItem('os_moments_html', momentsFeed.innerHTML);
-        const forumFeed = document.getElementById('forum-feed');
-        if (forumFeed) localStorage.setItem('os_forum_html', forumFeed.innerHTML);
-        const profilePostsFeed = document.getElementById('profile-posts-feed');
-        if (profilePostsFeed) localStorage.setItem('os_profile_posts_html', profilePostsFeed.innerHTML);
+        // C. UI 镜像快照（微信、朋友圈、论坛）
+        const elementsToSnapshot = {
+            'os_moments_html': 'moments-feed',
+            'os_forum_html': 'forum-feed',
+            'os_profile_posts_html': 'profile-posts-feed'
+        };
+        for (const [storageKey, elementId] of Object.entries(elementsToSnapshot)) {
+            const el = document.getElementById(elementId);
+            if (el) localStorage.setItem(storageKey, el.innerHTML);
+        }
 
-        // 3. 保存主屏幕换过的壁纸
+        // D. 桌面背景持久化
         const desktopBody = document.getElementById('desktop-body');
         if (desktopBody && desktopBody.style.backgroundImage) {
             localStorage.setItem('os_desktop_bg', desktopBody.style.backgroundImage);
         }
 
-        // 4. 自动搜集并保存你更改的所有文本和桌面图标、照片
+        // E. 动态 DOM 状态捕获（所有的头像、图标、文字）
         let customDOMState = {};
-        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
+        // 扫描所有可交互元素
+        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"], .moments-avatar, .moments-name');
         
         editableElements.forEach((el, index) => {
-            if (!el.id) el.id = 'auto_save_id_' + index;
+            const id = el.id || 'persistent_id_' + index;
+            if (!el.id) el.id = id;
+
             if (el.tagName === 'IMG') {
-                customDOMState[el.id] = el.src;
+                customDOMState[id] = el.src;
             } else {
-                customDOMState[el.id + '_html'] = el.innerHTML;
-                if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
+                customDOMState[id + '_html'] = el.innerHTML;
+                if (el.style.backgroundImage) customDOMState[id + '_bg'] = el.style.backgroundImage;
             }
         });
 
-        // 额外强制保存一些特殊文字
-        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
-        specialIds.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) customDOMState[id + '_html'] = el.innerHTML;
-        });
-
-        // 【终极修复1】：把最新状态永远缓存在内存里，供巡逻队读取
-        window.my_safe_dom_cache = customDOMState;
-
-        try {
-            localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
-        } catch(err) {
-            // 【终极修复2】：彻底删掉那烦人的5MB弹窗！就算塞满了也不弹窗，用内存缓存强行顶着！
-        }
-
+        // 强制写入
+        localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
+        
     } catch (e) {
-        // 捕获其余可能的错误，不再弹窗
+        console.warn("存档写入中...", e);
     }
 }
 
-// 1. 常规每隔1秒钟偷偷保存
-setInterval(performGlobalSave, 1000);
+// 强制存档触发器：
+// 1. 每 500 毫秒高频检查（原为1000ms，现在提速一倍）
+setInterval(performGlobalSave, 500);
 
-// 2. 苹果系统专属救命稻草：杀后台瞬间强制保存
+// 2. 针对手机“删后台”的终极防御：一旦网页不可见，立即执行“核爆级”存档
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') performGlobalSave();
+    performGlobalSave(); // 不管是切走还是杀后台，瞬间锁定当前画面
 });
-window.addEventListener('pagehide', performGlobalSave);
 
-// 3. 【核心修复】：页面加载时自动还原所有图片、头像、背景和文字
-window.addEventListener('load', () => {
-    // 还原基础配置
-    const savedConfig = JSON.parse(localStorage.getItem('os_config'));
-    if (savedConfig) config = { ...config, ...savedConfig };
-
-    // 还原所有手动改过的图片、图标和文字
-    const savedCustomState = JSON.parse(localStorage.getItem('os_custom_dom_state'));
-    if (savedCustomState) {
-        for (const key in savedCustomState) {
-            const el = document.getElementById(key.replace('_html', '').replace('_bg', ''));
-            if (!el) continue;
-            if (key.endsWith('_html')) {
-                el.innerHTML = savedCustomState[key];
-            } else if (key.endsWith('_bg')) {
-                el.style.backgroundImage = savedCustomState[key];
-            } else {
-                el.src = savedCustomState[key];
-            }
-        }
-    }
-    
-    // 还原桌面壁纸
-    const savedDesktopBg = localStorage.getItem('os_desktop_bg');
-    if (savedDesktopBg) document.getElementById('desktop-body').style.backgroundImage = savedDesktopBg;
-    
-    // 特别还原查手机右下角头像
-    const rightAvatar = document.getElementById('char-phone-right-avatar');
-    if (rightAvatar && userProfile.avatar) rightAvatar.src = userProfile.avatar;
+// 3. 针对苹果 Safari 的特殊处理
+window.addEventListener('pagehide', () => {
+    performGlobalSave();
 });
-  // 记住是否正在多选
+
+// 4. 用户点击屏幕任何地方时，也顺手存一下
+document.addEventListener('click', performGlobalSave);
+
+// 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
+const savedConfig = JSON.parse(localStorage.getItem('os_config'));
+if (savedConfig) {
+    config = { ...config, ...savedConfig };
+}  // 记住是否正在多选
 let selectedMsgIndices = new Set(); // 记住多选了哪些消息
 let currentQuoteMsg = null;
 // 记住正在引用哪句话
