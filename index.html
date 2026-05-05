@@ -6563,22 +6563,17 @@ function applySystemFontAndSize() {
 // ===== 新增：全屏外观设置功能 =====
 function openAppearanceApp() {
     document.getElementById('appearance-app-screen').classList.remove('slide-hidden');
-
-    // 每次打开外观页，都重新建立暂存，避免旧数据干扰新预览
-    tempAppearance.icons = {};
-    tempAppearance.names = {};
-
+    
     // 获取当前桌面壁纸用于预览
     const bodyBg = document.getElementById('desktop-body').style.backgroundImage;
     if (bodyBg && bodyBg !== 'none') {
+        // 提取 url("...") 里的内容
         const cleanUrl = bodyBg.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
         document.getElementById('preview-wallpaper').src = cleanUrl;
-        document.getElementById('preview-wallpaper').style.backgroundColor = 'transparent';
         tempAppearance.wallpaper = cleanUrl;
     } else {
         document.getElementById('preview-wallpaper').src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         document.getElementById('preview-wallpaper').style.backgroundColor = '#d1d5db';
-        tempAppearance.wallpaper = '';
     }
 
     // 回显全局聊天背景
@@ -6591,19 +6586,11 @@ function openAppearanceApp() {
         document.getElementById('preview-global-chat-bg').src = '';
         document.getElementById('preview-global-chat-bg').classList.add('hidden');
         document.getElementById('global-chat-bg-hint').classList.remove('hidden');
-        tempAppearance.chatBg = '';
-    }
-
-    // 工具：判断是不是那张透明占位图
-    function isTransparentPlaceholder(src) {
-        if (!src) return true;
-        return src.indexOf('data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==') === 0;
     }
 
     // 获取并显示所有桌面图标当前的状态
     const iconGrid = document.getElementById('icon-edit-grid');
     iconGrid.innerHTML = '';
-
     const iconsList = [
         { id: 'icon-wechat', name: '微信' },
         { id: 'icon-lorebook', name: '世界书' },
@@ -6613,40 +6600,27 @@ function openAppearanceApp() {
         { id: 'icon-settings', name: '设置' },
         { id: 'icon-appearance', name: '外观' },
         { id: 'icon-placeholder4', name: '查手机' },
+        // === 这里把外卖和默契比心加进去了 ===
         { id: 'icon-mqbx', name: '默契比心' },
         { id: 'icon-waimai', name: '外卖' }
     ];
 
-    const savedDesktopIcons = JSON.parse(localStorage.getItem('os_desktop_icons')) || {};
+    // 获取已经保存过的自定义名称
     const savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
 
     iconsList.forEach(icon => {
         const desktopImg = document.getElementById(icon.id);
-
-        let realSrc = '';
-
-        // 优先级1：已经保存过的自定义图标
-        if (savedDesktopIcons[icon.id]) {
-            realSrc = savedDesktopIcons[icon.id];
-        }
-        // 优先级2：当前桌面上真实已有的图标
-        else if (desktopImg && desktopImg.src && !isTransparentPlaceholder(desktopImg.src)) {
-            realSrc = desktopImg.src;
-        }
-        // 优先级3：空白图标就不给透明图，直接留空
-        else {
-            realSrc = '';
-        }
-
-        const displayName = savedAppNames[icon.id] || icon.name;
+        const currentSrc = tempAppearance.icons[icon.id] || (desktopImg ? desktopImg.src : '');
+        
+        // 决定显示的名字：优先用刚刚暂存的，其次用以前保存过的，最后用默认的
+        const displayName = tempAppearance.names[icon.id] || savedAppNames[icon.id] || icon.name;
 
         iconGrid.innerHTML += `
             <div class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-[10px] overflow-hidden shadow-sm border border-gray-100 bg-gray-200 cursor-pointer active:scale-95 transition-transform flex items-center justify-center relative" onclick="triggerIconEdit('${icon.id}')">
-                    <img id="preview-${icon.id}" src="${realSrc}" class="w-full h-full object-cover ${realSrc ? '' : 'hidden'}">
-                    <span id="preview-empty-${icon.id}" class="text-[10px] text-gray-400 ${realSrc ? 'hidden' : ''}">空白</span>
+                <div class="w-12 h-12 rounded-[10px] overflow-hidden shadow-sm border border-gray-100 bg-gray-200 cursor-pointer active:scale-95 transition-transform" onclick="triggerIconEdit('${icon.id}')">
+                    <img id="preview-${icon.id}" src="${currentSrc}" class="w-full h-full object-cover">
                 </div>
-                <span id="preview-name-${icon.id}" class="text-[10px] text-gray-500 cursor-pointer hover:text-black underline decoration-gray-300 underline-offset-2 px-1 text-center" onclick="editAppearanceAppName('${icon.id}', '${displayName.replace(/'/g, "\\'")}')">${displayName}</span>
+                <span id="preview-name-${icon.id}" class="text-[10px] text-gray-500 cursor-pointer hover:text-black underline decoration-gray-300 underline-offset-2 px-1" onclick="editAppearanceAppName('${icon.id}', '${displayName}')">${displayName}</span>
             </div>
         `;
     });
@@ -6654,8 +6628,8 @@ function openAppearanceApp() {
 
 function closeAppearanceApp() {
     document.getElementById('appearance-app-screen').classList.add('slide-hidden');
-    tempAppearance.icons = {};
-    tempAppearance.names = {};
+    tempAppearance.icons = {}; // 清除未保存的暂存状态
+    tempAppearance.names = {}; // 新增：清除未保存的文字状态
 }
 
 // 处理壁纸选择
@@ -6667,7 +6641,7 @@ function handleWallpaperSelect(input) {
             document.getElementById('preview-wallpaper').src = result;
             document.getElementById('preview-wallpaper').style.backgroundColor = 'transparent';
             tempAppearance.wallpaper = result;
-        };
+        }
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -6675,89 +6649,61 @@ function handleWallpaperSelect(input) {
 // 触发某个图标的选择
 function triggerIconEdit(iconId) {
     currentEditingIconId = iconId;
-    const input = document.getElementById('icon-file-input');
-    input.value = '';
-    input.click();
+    document.getElementById('icon-file-input').click();
 }
 
 // 处理图标选择
 function handleIconSelect(input) {
-    if (!currentEditingIconId) return;
-    if (!(input.files && input.files[0])) return;
-
-    const file = input.files[0];
-
-    if (!file.type || file.type.indexOf('image/') !== 0) {
-        alert('请选图片文件');
-        input.value = '';
-        return;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const result = e.target.result;
+            // 更新预览界面的小图标
+            document.getElementById(`preview-${currentEditingIconId}`).src = result;
+            // 暂存更改，等点了保存再生效
+            tempAppearance.icons[currentEditingIconId] = result;
+            // 清空 input 允许重复选择同一张
+            input.value = '';
+        }
+        reader.readAsDataURL(input.files[0]);
     }
-
-    const reader = new FileReader();
-    reader.onload = e => {
-        const result = e.target.result;
-
-        const previewImg = document.getElementById(`preview-${currentEditingIconId}`);
-        const previewEmpty = document.getElementById(`preview-empty-${currentEditingIconId}`);
-
-        if (previewImg) {
-            previewImg.src = result;
-            previewImg.classList.remove('hidden');
-        }
-
-        if (previewEmpty) {
-            previewEmpty.classList.add('hidden');
-        }
-
-        // 暂存更改，等点保存再真正应用
-        tempAppearance.icons[currentEditingIconId] = result;
-
-        input.value = '';
-    };
-    reader.readAsDataURL(file);
 }
 
 // 点击保存外观设置
 function saveAppearanceApp() {
     // 1. 应用壁纸
-    if (tempAppearance.wallpaper !== undefined) {
-        if (tempAppearance.wallpaper) {
-            const bgValue = `url(${tempAppearance.wallpaper})`;
-            document.getElementById('desktop-body').style.backgroundImage = bgValue;
-            localStorage.setItem('os_desktop_bg', bgValue);
-        } else {
-            document.getElementById('desktop-body').style.backgroundImage = 'none';
-            localStorage.removeItem('os_desktop_bg');
-        }
+    if (tempAppearance.wallpaper) {
+        const bgValue = `url(${tempAppearance.wallpaper})`;
+        document.getElementById('desktop-body').style.backgroundImage = bgValue;
+        localStorage.setItem('os_desktop_bg', bgValue);
     }
 
-    // 2. 读取已保存图标
+    // 2. 先读取已经保存过的桌面图标
     let savedDesktopIcons = JSON.parse(localStorage.getItem('os_desktop_icons')) || {};
 
-    // 3. 应用这次新换的图标到真实桌面，并保存
-    for (const [iconId, newSrc] of Object.entries(tempAppearance.icons)) {
-        savedDesktopIcons[iconId] = newSrc;
-
+    // 3. 应用所有更改过的图标到真实桌面，并且立刻单独保存
+    for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
-            desktopImg.src = newSrc;
-            desktopImg.style.backgroundColor = 'transparent';
-            desktopImg.classList.remove('hidden');
+            desktopImg.src = imgSrc;
+            if (desktopImg.style.backgroundColor) {
+                desktopImg.style.backgroundColor = 'transparent';
+            }
         }
+        savedDesktopIcons[iconId] = imgSrc;
     }
 
     localStorage.setItem('os_desktop_icons', JSON.stringify(savedDesktopIcons));
 
-    // 4. 应用所有更改过的名称到真实桌面，并保存
+    // 4. 应用所有更改过的名称到真实桌面，并且保存
     let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
     for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
         savedAppNames[iconId] = newName;
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
             const iconContainer = desktopImg.closest('.app-icon');
-            if (iconContainer && iconContainer.parentElement) {
-                const textEl = iconContainer.parentElement.querySelector('span');
-                if (textEl) textEl.innerText = newName;
+            if (iconContainer && iconContainer.nextElementSibling) {
+                iconContainer.nextElementSibling.innerText = newName;
             }
         }
     }
@@ -6766,10 +6712,10 @@ function saveAppearanceApp() {
     // 5. 保存全局聊天背景
     if (tempAppearance.chatBg !== undefined) {
         config.globalChatBg = tempAppearance.chatBg;
-        localStorage.setItem('globalChatBg', tempAppearance.chatBg || '');
+        localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
 
-    // 6. 同步进总缓存，防止旧缓存把新图顶回去
+    // 6. 额外把这次最新画面立刻写进总缓存，防止旧缓存把新图标顶回去
     try {
         let savedCustomState = JSON.parse(localStorage.getItem('os_custom_dom_state')) || {};
         for (const [iconId, imgSrc] of Object.entries(savedDesktopIcons)) {
@@ -6778,7 +6724,7 @@ function saveAppearanceApp() {
         localStorage.setItem('os_custom_dom_state', JSON.stringify(savedCustomState));
     } catch (e) {}
 
-    // 7. 立刻全局保存
+    // 7. 立刻执行一次全局保存，别再等每秒自动保存
     if (typeof performGlobalSave === 'function') {
         performGlobalSave();
     }
