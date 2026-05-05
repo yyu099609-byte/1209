@@ -8581,42 +8581,40 @@ let tempCharAppearance = { wallpaper: '', icons: {} };
 let currentCharEditingIconId = '';
 
 // 4. 打开选中角色的专属手机界面（加强版）
-
 function openCharacterPhone(friend) {
     currentPhoneFriendId = friend.id;
-        updateDateWidgetDisplay();
-document.getElementById('character-phone-title').innerText = `${friend.remark} 的手机`;
-    
+    updateDateWidgetDisplay();
+    document.getElementById('character-phone-title').innerText = `${friend.remark} 的手机`;
+
     // ====== 新增：让胶囊小组件的头像自动变成该角色的头像 ======
     const widgetAvatar = document.getElementById('char-phone-widget-avatar');
     if(widgetAvatar) {
         widgetAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
-    
+
     // ====== 新增：同步新组件左上角和右下角的双人头像 ======
     const leftAvatar = document.getElementById('char-phone-left-avatar');
     if(leftAvatar) {
         leftAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
+
     const rightAvatar = document.getElementById('char-phone-right-avatar');
     if(rightAvatar) {
-        rightAvatar.src = userProfile.avatar || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
+        // 【头像修复】：强制读取最新保存的用户微信头像
+        rightAvatar.src = localStorage.getItem('vip_my_avatar') || (typeof userProfile !== 'undefined' ? userProfile.avatar : '') || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
     }
-    // =======================================================
 
-    // 加载这台手机专属的壁纸
+    // 初始化壁纸
     const screen = document.getElementById('character-phone-screen');
     if (friend.phoneBg) {
         screen.style.backgroundImage = `url(${friend.phoneBg})`;
-        screen.style.backgroundColor = 'transparent';
     } else {
         screen.style.backgroundImage = 'none';
-        screen.style.backgroundColor = '#f2f2f6';
     }
 
-    // 加载这台手机专属的图标
-    const iconsToLoad = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
-    iconsToLoad.forEach(name => {
+    // 初始化所有图标
+    const charIconsList = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
+    charIconsList.forEach(name => {
         const imgEl = document.getElementById(`char-icon-${name}`);
         if (imgEl) {
             if (friend.phoneIcons && friend.phoneIcons[name]) {
@@ -8660,10 +8658,14 @@ function openCharAppearance() {
     const iconGrid = document.getElementById('char-icon-edit-grid');
     iconGrid.innerHTML = '';
     const charIconsList = [
-        { id: 'wechat', name: '微信' }, { id: 'notes', name: '备忘录' },
-        { id: 'album', name: '相册' }, { id: 'diary', name: '日记' },
-        { id: 'browser', name: '浏览器' }, { id: 'shop', name: '购物' },
-        { id: 'music', name: '音乐' }, { id: 'appearance', name: '外观设置' },
+        { id: 'wechat', name: '微信' },
+        { id: 'notes', name: '备忘录' },
+        { id: 'album', name: '相册' },
+        { id: 'diary', name: '日记' },
+        { id: 'browser', name: '浏览器' },
+        { id: 'shop', name: '购物' },
+        { id: 'music', name: '音乐' },
+        { id: 'appearance', name: '外观设置' },
         { id: 'wallet', name: '钱包' }
     ];
 
@@ -8679,6 +8681,11 @@ function openCharAppearance() {
                 <span class="text-[10px] text-gray-500">${icon.name}</span>
             </div>
         `;
+        
+        // 【防夺舍补丁1】：让巡逻队认可设置界面里的预览图标
+        if (window.my_safe_dom_cache) {
+            window.my_safe_dom_cache[`preview-char-${icon.id}`] = currentSrc;
+        }
     });
 
     document.getElementById('char-appearance-screen').classList.remove('slide-hidden');
@@ -8719,6 +8726,11 @@ function handleCharIconSelect(input) {
             document.getElementById(`preview-char-${currentCharEditingIconId}`).src = result;
             document.getElementById(`preview-char-${currentCharEditingIconId}`).classList.remove('bg-[#5c5c5c]');
             tempCharAppearance.icons[currentCharEditingIconId] = result;
+            
+            // 【防夺舍补丁2】：选中新图标后立马缓存，防止预览区闪回
+            if (window.my_safe_dom_cache) {
+                window.my_safe_dom_cache[`preview-char-${currentCharEditingIconId}`] = result;
+            }
         }
         reader.readAsDataURL(input.files[0]);
         input.value = '';
@@ -8728,20 +8740,49 @@ function handleCharIconSelect(input) {
 // 保存所有修改并应用
 function saveCharAppearance() {
     if (!currentPhoneFriendId) return;
+
     const friend = friendList.find(f => f.id === currentPhoneFriendId);
     if (!friend) return;
 
-    // 把临时保存的壁纸和图标彻底存入大脑
+    // 1. 保存壁纸
     friend.phoneBg = tempCharAppearance.wallpaper;
+    
+    // 2. 保存图标
     friend.phoneIcons = { ...tempCharAppearance.icons };
-    
+
+    // 3. 永久存档
     localStorage.setItem('friend_list', JSON.stringify(friendList));
+
+    // 4. 立刻应用到当前的手机界面
+    if (friend.phoneBg) {
+        const screen = document.getElementById('character-phone-screen');
+        if(screen) {
+            screen.style.backgroundImage = `url(${friend.phoneBg})`;
+        }
+    }
     
-    // 重新刷新一遍手机屏幕，让它长出新的样子
-    openCharacterPhone(friend);
-    
-    alert("✅ TA的手机外观已保存！每个角色都有专属手机啦！");
+    // 应用图标
+    const charIconsList = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
+    charIconsList.forEach(name => {
+        const imgEl = document.getElementById(`char-icon-${name}`);
+        if (imgEl) {
+            if (friend.phoneIcons && friend.phoneIcons[name]) {
+                imgEl.src = friend.phoneIcons[name];
+                imgEl.style.backgroundColor = 'transparent';
+                
+                // 【防夺舍补丁3】：保存时将真实的手机图标同步给巡逻队
+                if (window.my_safe_dom_cache) {
+                    window.my_safe_dom_cache[`char-icon-${name}`] = friend.phoneIcons[name];
+                }
+            }
+        }
+    });
+
     closeCharAppearance();
+    alert("✅ TA的手机外观已保存！");
+    
+    // 【防夺舍补丁4】：强制瞬间全局存档，彻底堵死巡逻队反悔的机会！
+    performGlobalSave();
 }
 
 // ================= 新增：点击头像获取内心OS功能 =================
