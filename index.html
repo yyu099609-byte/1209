@@ -1951,90 +1951,96 @@ openPlaylist();">
     </div>
 
 <script>
-// ================= 新增：IndexedDB 终极无感实时同步引擎 =================
-// 1. 页面加载完毕后，直接接管数据恢复，告别刷新和丢失！
-window.addEventListener('load', () => {
-    localforage.getItem('my_app_ultimate_backup').then(function(backup) {
-        if (backup) {
-            // --- 恢复核心数据（聊天记录、设定、钱包等） ---
-            if (backup.local) {
-                if (backup.local['os_user_profile']) {
-                    try { userProfile = JSON.parse(backup.local['os_user_profile']); } catch(e){}
-                }
-                if (backup.local['friend_list']) {
-                    try { friendList = JSON.parse(backup.local['friend_list']); } catch(e){}
-                }
-                if (backup.local['os_config']) {
-                    try { config = JSON.parse(backup.local['os_config']); } catch(e){}
-                }
-                // 强行刷新微信列表和聊天界面
-                if (typeof renderFriendList === 'function') renderFriendList();
-                if (typeof renderAllMessages === 'function') renderAllMessages(true);
-            }
+// =========================================================================
+// ================= 【终极重构】全面接管式 IndexedDB 引擎 =================
+// =========================================================================
 
-            // --- 恢复自定义的文本和图片（终极解决回填失败） ---
-            let customState = backup.memory;
-            if (customState && Object.keys(customState).length > 0) {
-                window.my_safe_dom_cache = customState;
-                for (let key in customState) {
+// 1. 初始化恢复：页面打开瞬间从硬盘最深处拉取所有数据
+window.addEventListener('load', async function() {
+    console.log("🚀 启动终极恢复引擎...");
+    try {
+        const backup = await localforage.getItem('echo_ultimate_database');
+        if (backup) {
+            // 恢复基础数据
+            if (backup.local) {
+                for (let key in backup.local) {
+                    try { localStorage.setItem(key, backup.local[key]); } catch(e) {}
+                }
+                if (backup.local['os_user_profile']) userProfile = JSON.parse(backup.local['os_user_profile']);
+                if (backup.local['friend_list']) friendList = JSON.parse(backup.local['friend_list']);
+                if (backup.local['os_config']) config = JSON.parse(backup.local['os_config']);
+            }
+            // 暴力回填所有文本和图片（解决之前图片文本删后台丢失问题）
+            if (backup.memory) {
+                window.my_safe_dom_cache = backup.memory;
+                for (let key in backup.memory) {
                     try {
                         if (key.endsWith('_html')) {
-                            let elId = key.replace('_html', '');
-                            let el = document.getElementById(elId);
-                            if (el) el.innerHTML = customState[key];
+                            let el = document.getElementById(key.replace('_html', ''));
+                            if (el) el.innerHTML = backup.memory[key];
                         } else if (key.endsWith('_bg')) {
-                            let elId = key.replace('_bg', '');
-                            let el = document.getElementById(elId);
-                            if (el) el.style.backgroundImage = customState[key];
+                            let el = document.getElementById(key.replace('_bg', ''));
+                            if (el) el.style.backgroundImage = backup.memory[key];
                         } else {
                             let el = document.getElementById(key);
-                            if (el && el.tagName === 'IMG') el.src = customState[key];
+                            if (el && el.tagName === 'IMG') el.src = backup.memory[key];
                         }
-                    } catch(e) {}
+                    } catch(err) {}
                 }
             }
-            console.log("✅ 终极修复：所有文本、图片、聊天数据已从 IndexedDB 完美重载！");
+            console.log("✅ 所有历史聊天、文本、图片重载完成！");
+            if (typeof renderFriendList === 'function') renderFriendList();
+            if (typeof renderAllMessages === 'function') renderAllMessages(true);
         }
-    });
+    } catch (error) {}
+    startUltimateObserver(); // 恢复完毕后，开启鹰眼监听
 });
 
-// 2. 实时全盘快照引擎：每 3 秒钟静默打包一次，再也不怕杀后台！
-let lastBackupHash = "";
-function realTimeBackupToIndexedDB() {
-    let currentLocalStore = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        currentLocalStore[key] = localStorage.getItem(key);
-    }
-    
-    // 【核心绕过 5MB 限制】：如果图片太多导致系统 localStorage 爆满写不进去，我们就直接从内存里强行抓取核心变量！
-    if (typeof friendList !== 'undefined') currentLocalStore['friend_list'] = JSON.stringify(friendList);
-    if (typeof userProfile !== 'undefined') currentLocalStore['os_user_profile'] = JSON.stringify(userProfile);
-    if (typeof config !== 'undefined') currentLocalStore['os_config'] = JSON.stringify(config);
-
-    let memoryData = window.my_safe_dom_cache || {};
-    
-    // 快速比对数据长度，只有你修改了东西才写入硬盘（省电防卡顿）
-    let currentHash = JSON.stringify(currentLocalStore).length + "_" + JSON.stringify(memoryData).length;
-    
-    if (currentHash !== lastBackupHash) {
-        lastBackupHash = currentHash;
-        localforage.setItem('my_app_ultimate_backup', {
+// 2. 核心硬盘直写技术
+let isSaving = false;
+async function forceSaveToDisk() {
+    if (isSaving) return;
+    isSaving = true;
+    try {
+        let currentLocalStore = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            currentLocalStore[key] = localStorage.getItem(key);
+        }
+        // 绕过 5MB 限制强制抓取变量
+        if (typeof friendList !== 'undefined') currentLocalStore['friend_list'] = JSON.stringify(friendList);
+        if (typeof userProfile !== 'undefined') currentLocalStore['os_user_profile'] = JSON.stringify(userProfile);
+        if (typeof config !== 'undefined') currentLocalStore['os_config'] = JSON.stringify(config);
+        
+        await localforage.setItem('echo_ultimate_database', {
             local: currentLocalStore,
-            memory: memoryData
+            memory: window.my_safe_dom_cache || {}
         });
+    } catch (e) {} finally {
+        isSaving = false;
     }
 }
 
-// 自动开启 3 秒巡逻快照
-setInterval(realTimeBackupToIndexedDB, 3000);
+// 3. 劫持旧代码：把你代码里所有还在调用旧保存的命令，强制转接给硬盘直写
+window.performGlobalSave = forceSaveToDisk;
 
-// 保留双重保险：退到桌面瞬间强制快照
+// 4. 鹰眼监听器：只要有风吹草动，立刻保存！
+function startUltimateObserver() {
+    setInterval(forceSaveToDisk, 2000); // 兜底：每2秒存一次
+    let saveTimeout;
+    const observer = new MutationObserver(() => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(forceSaveToDisk, 500); // 只要页面字/图变了，0.5秒后立刻存
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true });
+}
+
+// 5. 最后一道防线：切后台瞬间再存一次
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') realTimeBackupToIndexedDB();
+    if (document.visibilityState === 'hidden') forceSaveToDisk();
 });
-window.addEventListener('pagehide', realTimeBackupToIndexedDB);
-// ===================================================================
+window.addEventListener('pagehide', forceSaveToDisk);
+// =========================================================================
 // ================= 新增：语音通话引擎 =================
 let vcTimerInterval;
 let vcSeconds = 0;
@@ -2697,85 +2703,6 @@ let chatHistory = [];
 let friendList = JSON.parse(localStorage.getItem('friend_list')) || [];
 let currentFriendId = null;
 let isMultiSelecting = false;
-
-// 【全自动存档魔法】升级版：加入防杀后台抢救机制与内存报警
-function performGlobalSave() {
-    try {
-        // 基础核心数据保存
-        localStorage.setItem('os_user_profile', JSON.stringify(userProfile));
-        localStorage.setItem('friend_list', JSON.stringify(friendList));
-        localStorage.setItem('os_config', JSON.stringify(config));
-        
-        // 1. 保存音乐列表和点赞状态
-        if (typeof playlist !== 'undefined') localStorage.setItem('os_playlist', JSON.stringify(playlist));
-        if (typeof momentLikes !== 'undefined') localStorage.setItem('os_moment_likes', JSON.stringify(momentLikes));
-        
-        // 2. 保存朋友圈和论坛推文的画面
-        const momentsFeed = document.getElementById('moments-feed');
-        if (momentsFeed) localStorage.setItem('os_moments_html', momentsFeed.innerHTML);
-        const forumFeed = document.getElementById('forum-feed');
-        if (forumFeed) localStorage.setItem('os_forum_html', forumFeed.innerHTML);
-        const profilePostsFeed = document.getElementById('profile-posts-feed');
-        if (profilePostsFeed) localStorage.setItem('os_profile_posts_html', profilePostsFeed.innerHTML);
-
-        // 3. 保存主屏幕换过的壁纸
-        const desktopBody = document.getElementById('desktop-body');
-        if (desktopBody && desktopBody.style.backgroundImage) {
-            localStorage.setItem('os_desktop_bg', desktopBody.style.backgroundImage);
-        }
-
-        // 4. 自动搜集并保存你更改的所有文本和桌面图标、照片
-        let customDOMState = {};
-        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
-        
-        editableElements.forEach((el, index) => {
-            if (!el.id) el.id = 'auto_save_id_' + index;
-            if (el.tagName === 'IMG') {
-                customDOMState[el.id] = el.src;
-            } else {
-                customDOMState[el.id + '_html'] = el.innerHTML;
-                if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
-            }
-        });
-
-        // 额外强制保存一些特殊文字
-        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
-        specialIds.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) customDOMState[id + '_html'] = el.innerHTML;
-        });
-
-        // 【终极修复1】：把最新状态永远缓存在内存里，供巡逻队读取
-        window.my_safe_dom_cache = customDOMState;
-
-        try {
-            localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
-        } catch(err) {
-            // 【终极修复2】：彻底删掉那烦人的5MB弹窗！就算塞满了也不弹窗，用内存缓存强行顶着！
-        }
-
-    } catch (e) {
-        // 捕获其余可能的错误，不再弹窗
-    }
-}
-
-// 1. 常规每隔1秒钟偷偷保存
-setInterval(performGlobalSave, 1000);
-
-// 2. 苹果系统专属救命稻草：双重保险！
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-        performGlobalSave(); // 你原来的普通保存
-        backupToIndexedDB(); // 新增的：瞬间塞入几百MB的 IndexedDB 黑洞！
-    }
-});
-window.addEventListener('pagehide', () => {
-    performGlobalSave();
-    backupToIndexedDB();
-});
-
-// 每30秒自动备份一次数据库（防长时间不切后台）
-setInterval(backupToIndexedDB, 30000);
 
 // 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
 const savedConfig = JSON.parse(localStorage.getItem('os_config'));
