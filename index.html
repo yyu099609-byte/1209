@@ -442,7 +442,7 @@ openPlaylist();">
         </div>
         <div class="flex-1 overflow-y-auto bg-[#ededed]">
             <div id="chat-flow" class="p-4 space-y-4 min-h-full">
-                <div class="text-center text-xs text-gray-400 my-4">开始与 AI 好友聊天吧</div>
+                <div class="text-center text-xs text-gray-400 my-4">(♡>𖥦<)/♥</div>
             </div>
         </div>
                 <div class="p-3 bg-[#f7f7f7] border-t flex items-center gap-2 sticky bottom-0 relative">
@@ -2559,7 +2559,7 @@ function editBalance() {
     if (newBalance !== null && !isNaN(newBalance) && newBalance !== '') {
         walletBalance = parseFloat(newBalance);
         saveWalletData();
-        alert('✅ 余额修改成功！');
+        alert('余额修改成功！');
     }
 }
 
@@ -6363,7 +6363,7 @@ async function fetchModelsFromAPI() {
                 const isSelected = (m.id === config.model) ? 'selected' : '';
                 select.innerHTML += `<option value="${m.id}" ${isSelected}>${m.id}</option>`;
             });
-            alert("✅ 拉取成功！请在左侧下拉框选择你要用的模型。");
+            alert("拉取成功！请在左侧下拉框选择你要用的模型。");
         } else {
             alert("未获取到模型列表，请检查地址是否正确。");
         }
@@ -6382,7 +6382,7 @@ function saveSettingsApp() {
     // 保存并应用字体
     applySystemFontAndSize();
 
-    alert("✅ 设置已保存！");
+    alert("设置已保存！");
     closeSettingsApp();
 }
 
@@ -6402,7 +6402,7 @@ function handleLocalFont(input) {
         loadCustomFont('MyCustomFont', fontUrl);
         input.value = ''; // 清空方便重新选择
         
-        alert("✅ 本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\n👉 如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
+        alert("本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
     }
 }
 
@@ -6439,7 +6439,7 @@ function saveFontPreset() {
     };
     localStorage.setItem('fontPresets_data', JSON.stringify(fontPresets));
     renderFontPresets();
-    alert("✅ 预设保存成功！");
+    alert("预设保存成功！");
 }
 
 function deleteFontPreset() {
@@ -6624,44 +6624,46 @@ function handleIconSelect(input) {
     }
 }
 
-// 点击保存外观设置
+// 修复版：点击保存外观设置
 function saveAppearanceApp() {
     // 1. 应用壁纸
     if (tempAppearance.wallpaper) {
         document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
     }
-    // 2. 应用所有更改过的图标到真实桌面
+
+    // 2. 应用图标
     for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
             desktopImg.src = imgSrc;
-            // 如果原本是纯色占位的背景，现在去除了
             if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
         }
     }
-    
-    // 3. 新增：应用所有更改过的名称到真实桌面
+
+    // 3. 应用名称
     let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
     for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
         savedAppNames[iconId] = newName;
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
-            // 通过图片往上找父元素，再找旁边的文字元素
-            const iconContainer = desktopImg.closest('.app-icon');
-            if (iconContainer && iconContainer.nextElementSibling) {
-                iconContainer.nextElementSibling.innerText = newName;
+            const parent = desktopImg.parentElement;
+            if (parent && parent.nextElementSibling) {
+                parent.nextElementSibling.innerText = newName;
             }
         }
     }
     localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-    
-    // 保存全局聊天背景到缓存
-    if (tempAppearance.chatBg !== undefined) {
+
+    // 4. 保存聊天背景
+    if (tempAppearance.chatBg) {
         config.globalChatBg = tempAppearance.chatBg;
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
     
-    alert("✅ 外观设置已应用到桌面！");
+    // 【关键】：点保存时触发一次全局存档，确保刷新不丢失
+    if(typeof performGlobalSave === 'function') performGlobalSave();
+
+    alert("外观设置已应用！");
     closeAppearanceApp();
 }
 // ===============================
@@ -7138,7 +7140,7 @@ async function manualSmsSummarize() {
     btn.innerText = "开始提取短信记忆";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("✅ 短信记忆提取完成！");
+    alert("短信记忆提取完成！");
 }
 
 function checkAndTriggerSmsAutoSummary() {
@@ -7265,7 +7267,7 @@ function saveFriendLorebook() {
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     
     closeFriendLorebook();
-    alert("✅ 世界书关联已保存！AI现在只会提取你打勾的这些设定。");
+    alert("世界书关联已保存！");
 }
 
 // ================= 新增：自动总结记忆功能引擎 (卡片版) =================
@@ -7431,7 +7433,7 @@ async function manualSummarize() {
     btn.innerText = "开始手动总结";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("✅ 记忆提取完成！上面多了一张新的记忆卡片！");
+    alert("记忆提取完成！上面多了一张新的记忆卡片！");
 }
 
 function checkAndTriggerAutoSummary() {
@@ -7594,7 +7596,7 @@ function saveBubbleSettings() {
     
     applyDynamicBubbleCss(cssContent);
     closeBubbleSettings();
-    alert('✅ 气泡样式已保存并立即生效！');
+    alert('保存成功！');
 }
 
 function renderBubblePresets() {
@@ -7614,7 +7616,7 @@ function saveBubblePreset() {
     renderBubblePresets();
     
     document.getElementById('bubble-preset-select').value = presetName;
-    alert("✅ 气泡预设保存成功！");
+    alert("气泡预设保存成功");
 }
 
 function deleteBubblePreset() {
@@ -7697,7 +7699,7 @@ function saveOtherSettings() {
     }
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeOtherSettings();
-    alert("✅ 高级设置保存成功！");
+    alert("保存成功！");
 }
 
 function clearFriendHistory() {
@@ -7928,7 +7930,7 @@ function handleSingleChatBg(input) {
                 if (friend) {
                     friend.chatBg = result;
                     localStorage.setItem('friend_list', JSON.stringify(friendList));
-                    alert("✅ 这位好友的专属背景已保存！");
+                    alert("此好友的专属背景已保存！");
                 }
             }
         }
@@ -8745,7 +8747,7 @@ function saveCharAppearance() {
     // 重新刷新一遍手机屏幕，让它长出新的样子
     openCharacterPhone(friend);
     
-    alert("✅ TA的手机外观已保存！每个角色都有专属手机啦！");
+    alert("TA的手机外观已保存！每个角色都有专属手机啦！");
     closeCharAppearance();
 }
 
@@ -9023,7 +9025,7 @@ function saveMountMemory() {
     
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeMountMemoryModal();
-    alert("✅ 记忆挂载成功！此后聊天将会带上你勾选的关联记忆。");
+    alert("记忆挂载成功!");
 }0
 // ================= 新增：真正的后台自动活跃引擎 =================
 // 这个引擎会每隔30秒检查一次所有人（包括群聊）的时间
@@ -9084,7 +9086,7 @@ function addWeightRecord() {
     localStorage.setItem('record_weights', JSON.stringify(weightRecords)); // 永久保存
     document.getElementById('weight-input').value = ''; // 清空输入框方便下次输入
     drawWeightChart(); // 重新画出最新的折线图
-    alert("✅ 体重记录成功！");
+    alert("体重记录成功！");
 }
 
 function saveDailyRecord(type) {
@@ -9094,7 +9096,7 @@ function saveDailyRecord(type) {
         return;
     }
     localStorage.setItem('record_' + type, val); // 永久保存这个数据
-    alert("✅ 保存成功！");
+    alert("保存成功！");
 }
 
 // 自动画出体重变化折线图的魔法引擎
@@ -9537,19 +9539,34 @@ const originalCloseMusicPlayer = window.closeMusicPlayer;
 window.closeMusicPlayer = function() {
     if (originalCloseMusicPlayer) originalCloseMusicPlayer();
     const title = document.getElementById('player-title').innerText;
-    // 只有在真的有歌曲时才显示浮窗
-    if (title && title !== '暂无歌曲') {
+    
+    // 【修改点】：只有在真的有歌曲，并且【已经发出了邀请（处于一起听状态）】时才显示浮窗
+    if (title && title !== '暂无歌曲' && listeningTogetherCharId !== null) {
         const coverSrc = document.getElementById('player-cover-img').src;
         document.getElementById('music-floating-cover').src = coverSrc;
         document.getElementById('music-floating-widget').classList.remove('hidden');
+    } else {
+        // 【修改点】：如果没有一起听，或者没有歌，则强制隐藏浮窗
+        document.getElementById('music-floating-widget').classList.add('hidden');
     }
 };
 
 // 打开邀请弹窗
 function openListenModal() {
+    // 【修改点】：新增退出功能。如果当前已经在“一起听”状态，再次点击将询问是否退出
+    if (listeningTogetherCharId !== null) {
+        if (confirm("当前正在和好友一起听歌，是否要退出一起听？")) {
+            listeningTogetherCharId = null; // 清除一起听状态
+            document.getElementById('music-floating-widget').classList.add('hidden'); // 立刻隐藏悬浮球
+            alert("已退出一起听！");
+        }
+        return; // 结束函数，不再弹出好友列表
+    }
+
     const list = document.getElementById('listen-char-list');
     list.innerHTML = '';
     const friends = friendList.filter(f => !f.isGroup);
+    
     if (friends.length === 0) {
         list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">还没有添加角色哦</div>';
     } else {
