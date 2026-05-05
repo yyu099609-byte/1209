@@ -17,6 +17,7 @@
     
     <title>echo</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
     <style id="custom-style">
         /* 终极安卓适配补丁：锁定屏幕的真实可见高度 */
         html, body { height: 100%; width: 100%; overflow: hidden; margin: 0; padding: 0; }
@@ -1950,6 +1951,40 @@ openPlaylist();">
     </div>
 
 <script>
+// ================= 新增：IndexedDB 无限容量防丢系统 =================
+if (!sessionStorage.getItem('idb_initialized')) {
+    console.log("正在从 IndexedDB 恢复本地数据...");
+    localforage.getItem('my_app_ultimate_backup').then(function(backup) {
+        if (backup) {
+            if (backup.local) {
+                for (let key in backup.local) {
+                    try { localStorage.setItem(key, backup.local[key]); } catch(e) {}
+                }
+            }
+            if (backup.memory) window.my_safe_dom_cache = backup.memory;
+            console.log("✅ IndexedDB 数据恢复成功！");
+            sessionStorage.setItem('idb_initialized', 'true');
+            location.reload(); 
+        } else {
+            sessionStorage.setItem('idb_initialized', 'true');
+        }
+    }).catch(function(err) {
+        sessionStorage.setItem('idb_initialized', 'true');
+    });
+}
+
+function backupToIndexedDB() {
+    let currentLocalStore = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        currentLocalStore[key] = localStorage.getItem(key);
+    }
+    localforage.setItem('my_app_ultimate_backup', {
+        local: currentLocalStore,
+        memory: window.my_safe_dom_cache || {} 
+    });
+}
+// ===================================================================
 // ================= 新增：语音通话引擎 =================
 let vcTimerInterval;
 let vcSeconds = 0;
@@ -2677,11 +2712,20 @@ function performGlobalSave() {
 // 1. 常规每隔1秒钟偷偷保存
 setInterval(performGlobalSave, 1000);
 
-// 2. 苹果系统专属救命稻草：在你上滑杀后台、切回桌面的那一瞬间，强制瞬间保存！
+// 2. 苹果系统专属救命稻草：双重保险！
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') performGlobalSave();
+    if (document.visibilityState === 'hidden') {
+        performGlobalSave(); // 你原来的普通保存
+        backupToIndexedDB(); // 新增的：瞬间塞入几百MB的 IndexedDB 黑洞！
+    }
 });
-window.addEventListener('pagehide', performGlobalSave);
+window.addEventListener('pagehide', () => {
+    performGlobalSave();
+    backupToIndexedDB();
+});
+
+// 每30秒自动备份一次数据库（防长时间不切后台）
+setInterval(backupToIndexedDB, 30000);
 
 // 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
 const savedConfig = JSON.parse(localStorage.getItem('os_config'));
