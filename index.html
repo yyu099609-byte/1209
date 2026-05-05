@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
-    <link rel="icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/vZM6rxmR/IMG-4644.png">
+    <link rel="icon" href="https://i.postimg.cc/vZM6rxmR/IMG-4644.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="echo">
+    <meta name="apple-mobile-web-app-title" content="pluie">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f0f0f0">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiZWNobyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMGYwZjAifQ==">
@@ -15,7 +15,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <title>echo</title>
+    <title>pluie</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style id="custom-style">
         /* 终极安卓适配补丁：锁定屏幕的真实可见高度 */
@@ -2545,7 +2545,7 @@ function editBalance() {
     if (newBalance !== null && !isNaN(newBalance) && newBalance !== '') {
         walletBalance = parseFloat(newBalance);
         saveWalletData();
-        alert('✅ 余额修改成功！');
+        alert('余额修改成功！');
     }
 }
 
@@ -2728,7 +2728,7 @@ function sendSystemNotification(title, body) {
             let cleanBody = body.replace(/<[^>]+>/g, '[图片/表情包]');
             new Notification(title, { 
                 body: cleanBody,
-                icon: 'https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg' 
+                icon: 'https://i.postimg.cc/vZM6rxmR/IMG-4644.png' 
             });
         }
     }
@@ -6349,12 +6349,12 @@ async function fetchModelsFromAPI() {
                 const isSelected = (m.id === config.model) ? 'selected' : '';
                 select.innerHTML += `<option value="${m.id}" ${isSelected}>${m.id}</option>`;
             });
-            alert("✅ 拉取成功！请在左侧下拉框选择你要用的模型。");
+            alert("拉取成功！请在左侧下拉框选择你要用的模型。");
         } else {
             alert("未获取到模型列表，请检查地址是否正确。");
         }
     } catch(e) {
-        alert("❌ 拉取失败，请检查反代地址、密匙是否正确，或网络是否通畅。");
+        alert("拉取失败，请检查反代地址、密匙是否正确，或网络是否通畅。");
     }
     btn.innerText = "拉取模型";
 }
@@ -6368,7 +6368,7 @@ function saveSettingsApp() {
     // 保存并应用字体
     applySystemFontAndSize();
 
-    alert("✅ 设置已保存！");
+    alert("设置已保存！");
     closeSettingsApp();
 }
 
@@ -6388,7 +6388,7 @@ function handleLocalFont(input) {
         loadCustomFont('MyCustomFont', fontUrl);
         input.value = ''; // 清空方便重新选择
         
-        alert("✅ 本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\n👉 如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
+        alert("本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\n如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
     }
 }
 
@@ -6425,7 +6425,7 @@ function saveFontPreset() {
     };
     localStorage.setItem('fontPresets_data', JSON.stringify(fontPresets));
     renderFontPresets();
-    alert("✅ 预设保存成功！");
+    alert("预设保存成功！");
 }
 
 function deleteFontPreset() {
@@ -6657,7 +6657,7 @@ function saveAppearanceApp() {
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
 
-    alert("✅ 外观设置已应用到桌面！");
+    alert("外观设置已应用到桌面！");
     closeAppearanceApp();
 
     // 【新增防夺舍补丁】：保存完毕的瞬间立刻强行写进本地存档，不给巡逻队任何覆盖的机会！
@@ -7137,7 +7137,7 @@ async function manualSmsSummarize() {
     btn.innerText = "开始提取短信记忆";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("✅ 短信记忆提取完成！");
+    alert("短信记忆提取完成！");
 }
 
 function checkAndTriggerSmsAutoSummary() {
@@ -7264,7 +7264,7 @@ function saveFriendLorebook() {
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     
     closeFriendLorebook();
-    alert("✅ 世界书关联已保存！AI现在只会提取你打勾的这些设定。");
+    alert("世界书关联已保存！AI现在只会提取你打勾的这些设定。");
 }
 
 // ================= 新增：自动总结记忆功能引擎 (卡片版) =================
@@ -7430,7 +7430,7 @@ async function manualSummarize() {
     btn.innerText = "开始手动总结";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("✅ 记忆提取完成！上面多了一张新的记忆卡片！");
+    alert("记忆提取完成！上面多了一张新的记忆卡片！");
 }
 
 function checkAndTriggerAutoSummary() {
@@ -7593,7 +7593,7 @@ function saveBubbleSettings() {
     
     applyDynamicBubbleCss(cssContent);
     closeBubbleSettings();
-    alert('✅ 气泡样式已保存并立即生效！');
+    alert('气泡样式已保存并立即生效！');
 }
 
 function renderBubblePresets() {
@@ -7613,7 +7613,7 @@ function saveBubblePreset() {
     renderBubblePresets();
     
     document.getElementById('bubble-preset-select').value = presetName;
-    alert("✅ 气泡预设保存成功！");
+    alert("气泡预设保存成功！");
 }
 
 function deleteBubblePreset() {
@@ -7696,7 +7696,7 @@ function saveOtherSettings() {
     }
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeOtherSettings();
-    alert("✅ 高级设置保存成功！");
+    alert("高级设置保存成功！");
 }
 
 function clearFriendHistory() {
@@ -7927,7 +7927,7 @@ function handleSingleChatBg(input) {
                 if (friend) {
                     friend.chatBg = result;
                     localStorage.setItem('friend_list', JSON.stringify(friendList));
-                    alert("✅ 这位好友的专属背景已保存！");
+                    alert("这位好友的专属背景已保存！");
                 }
             }
         }
@@ -8744,7 +8744,7 @@ function saveCharAppearance() {
     // 重新刷新一遍手机屏幕，让它长出新的样子
     openCharacterPhone(friend);
     
-    alert("✅ TA的手机外观已保存！每个角色都有专属手机啦！");
+    alert("TA的手机外观已保存！每个角色都有专属手机啦！");
     closeCharAppearance();
 }
 
@@ -8943,7 +8943,7 @@ function saveGroupChat() {
         members: selectedGroupMembers,
         groupPersonas: groupPersonas,
         chatHistory: [],
-        avatar: "https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg", // 给群聊随机弄了个默认头像
+        avatar: "https://i.postimg.cc/vZM6rxmR/IMG-4644.png", // 给群聊随机弄了个默认头像
         desc: "群聊",
         memoryList: [],
         mountedSingles: [] 
@@ -9022,7 +9022,7 @@ function saveMountMemory() {
     
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeMountMemoryModal();
-    alert("✅ 记忆挂载成功！此后聊天将会带上你勾选的关联记忆。");
+    alert("记忆挂载成功！");
 }0
 // ================= 新增：真正的后台自动活跃引擎 =================
 // 这个引擎会每隔30秒检查一次所有人（包括群聊）的时间
@@ -9083,7 +9083,7 @@ function addWeightRecord() {
     localStorage.setItem('record_weights', JSON.stringify(weightRecords)); // 永久保存
     document.getElementById('weight-input').value = ''; // 清空输入框方便下次输入
     drawWeightChart(); // 重新画出最新的折线图
-    alert("✅ 体重记录成功！");
+    alert("体重记录成功！");
 }
 
 function saveDailyRecord(type) {
@@ -9093,7 +9093,7 @@ function saveDailyRecord(type) {
         return;
     }
     localStorage.setItem('record_' + type, val); // 永久保存这个数据
-    alert("✅ 保存成功！");
+    alert("保存成功！");
 }
 
 // 自动画出体重变化折线图的魔法引擎
