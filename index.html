@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/vZM6rxmR/IMG-4644.png">
-    <link rel="icon" href="https://i.postimg.cc/vZM6rxmR/IMG-4644.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
+    <link rel="icon" href="https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="pluie">
+    <meta name="apple-mobile-web-app-title" content="echo">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f0f0f0">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiZWNobyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMGYwZjAifQ==">
@@ -15,7 +15,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <title>pluie</title>
+    <title>echo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style id="custom-style">
         /* 终极安卓适配补丁：锁定屏幕的真实可见高度 */
@@ -442,7 +442,7 @@ openPlaylist();">
         </div>
         <div class="flex-1 overflow-y-auto bg-[#ededed]">
             <div id="chat-flow" class="p-4 space-y-4 min-h-full">
-                <div class="text-center text-xs text-gray-400 my-4">(♡>𖥦<)/♥</div>
+                <div class="text-center text-xs text-gray-400 my-4">开始与 AI 好友聊天吧</div>
             </div>
         </div>
                 <div class="p-3 bg-[#f7f7f7] border-t flex items-center gap-2 sticky bottom-0 relative">
@@ -1561,21 +1561,15 @@ openPlaylist();">
         .glass-input::placeholder { color: #888; }
     </style>
 
-    <div id="music-floating-widget" onclick="openMusicPlayer()" class="fixed right-4 top-24 w-12 h-12 rounded-full border-2 border-white shadow-[0_4px_10px_rgba(0,0,0,0.2)] z-[90] hidden cursor-pointer transition-transform active:scale-90" style="animation: spin 10s linear infinite;">
-        <img id="music-floating-cover" src="" class="w-full h-full object-cover rounded-full">
-    </div>
-
     <div id="music-player-screen" class="fixed inset-0 hidden flex flex-col z-[100] transition-transform duration-300 translate-y-full player-bg-adaptive" style="background-size: cover; background-position: center;">
         <div class="h-14 flex items-center justify-between px-4 mt-2 border-b pb-2 player-border-adaptive">
             <button onclick="closeMusicPlayer()" class="w-10 flex justify-start player-text-adaptive">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
             </button>
             <div class="flex-1 text-center font-bold text-[16px] player-text-adaptive">正在播放</div>
-            <div class="w-auto flex justify-end items-center gap-3 pr-2">
-                <button onclick="document.getElementById('player-bg-input').click()" class="player-text-adaptive active:scale-90 transition-transform flex-shrink-0">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </button>
-            </div>
+            <button onclick="document.getElementById('player-bg-input').click()" class="w-10 flex justify-end player-text-adaptive active:scale-90 transition-transform">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </button>
             <input type="file" id="player-bg-input" class="hidden" accept="image/*" onchange="changePlayerBg(this)">
         </div>
 
@@ -2547,7 +2541,7 @@ function editBalance() {
     if (newBalance !== null && !isNaN(newBalance) && newBalance !== '') {
         walletBalance = parseFloat(newBalance);
         saveWalletData();
-        alert('余额修改成功！');
+        alert('✅ 余额修改成功！');
     }
 }
 
@@ -2730,7 +2724,7 @@ function sendSystemNotification(title, body) {
             let cleanBody = body.replace(/<[^>]+>/g, '[图片/表情包]');
             new Notification(title, { 
                 body: cleanBody,
-                icon: 'https://i.postimg.cc/vZM6rxmR/IMG-4644.png' 
+                icon: 'https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg' 
             });
         }
     }
@@ -6351,7 +6345,7 @@ async function fetchModelsFromAPI() {
                 const isSelected = (m.id === config.model) ? 'selected' : '';
                 select.innerHTML += `<option value="${m.id}" ${isSelected}>${m.id}</option>`;
             });
-            alert("拉取成功！请在左侧下拉框选择你要用的模型。");
+            alert("✅ 拉取成功！请在左侧下拉框选择你要用的模型。");
         } else {
             alert("未获取到模型列表，请检查地址是否正确。");
         }
@@ -6370,7 +6364,7 @@ function saveSettingsApp() {
     // 保存并应用字体
     applySystemFontAndSize();
 
-    alert("设置已保存！");
+    alert("✅ 设置已保存！");
     closeSettingsApp();
 }
 
@@ -6390,7 +6384,7 @@ function handleLocalFont(input) {
         loadCustomFont('MyCustomFont', fontUrl);
         input.value = ''; // 清空方便重新选择
         
-        alert("本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
+        alert("✅ 本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\n👉 如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
     }
 }
 
@@ -6427,7 +6421,7 @@ function saveFontPreset() {
     };
     localStorage.setItem('fontPresets_data', JSON.stringify(fontPresets));
     renderFontPresets();
-    alert("预设保存成功！");
+    alert("✅ 预设保存成功！");
 }
 
 function deleteFontPreset() {
@@ -6649,7 +6643,7 @@ function saveAppearanceApp() {
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
     
-    alert("外观设置已应用到桌面！");
+    alert("✅ 外观设置已应用到桌面！");
     closeAppearanceApp();
 }
 // ===============================
@@ -7126,7 +7120,7 @@ async function manualSmsSummarize() {
     btn.innerText = "开始提取短信记忆";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("短信记忆提取完成！");
+    alert("✅ 短信记忆提取完成！");
 }
 
 function checkAndTriggerSmsAutoSummary() {
@@ -7253,7 +7247,7 @@ function saveFriendLorebook() {
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     
     closeFriendLorebook();
-    alert("世界书关联已保存！");
+    alert("✅ 世界书关联已保存！AI现在只会提取你打勾的这些设定。");
 }
 
 // ================= 新增：自动总结记忆功能引擎 (卡片版) =================
@@ -7419,7 +7413,7 @@ async function manualSummarize() {
     btn.innerText = "开始手动总结";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
-    alert("记忆提取完成！上面多了一张新的记忆卡片！");
+    alert("✅ 记忆提取完成！上面多了一张新的记忆卡片！");
 }
 
 function checkAndTriggerAutoSummary() {
@@ -7582,7 +7576,7 @@ function saveBubbleSettings() {
     
     applyDynamicBubbleCss(cssContent);
     closeBubbleSettings();
-    alert('保存成功！');
+    alert('✅ 气泡样式已保存并立即生效！');
 }
 
 function renderBubblePresets() {
@@ -7602,7 +7596,7 @@ function saveBubblePreset() {
     renderBubblePresets();
     
     document.getElementById('bubble-preset-select').value = presetName;
-    alert("气泡预设保存成功");
+    alert("✅ 气泡预设保存成功！");
 }
 
 function deleteBubblePreset() {
@@ -7685,7 +7679,7 @@ function saveOtherSettings() {
     }
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeOtherSettings();
-    alert("保存成功！");
+    alert("✅ 高级设置保存成功！");
 }
 
 function clearFriendHistory() {
@@ -7916,7 +7910,7 @@ function handleSingleChatBg(input) {
                 if (friend) {
                     friend.chatBg = result;
                     localStorage.setItem('friend_list', JSON.stringify(friendList));
-                    alert("此好友的专属背景已保存！");
+                    alert("✅ 这位好友的专属背景已保存！");
                 }
             }
         }
@@ -8733,7 +8727,7 @@ function saveCharAppearance() {
     // 重新刷新一遍手机屏幕，让它长出新的样子
     openCharacterPhone(friend);
     
-    alert("TA的手机外观已保存！每个角色都有专属手机啦！");
+    alert("✅ TA的手机外观已保存！每个角色都有专属手机啦！");
     closeCharAppearance();
 }
 
@@ -8932,7 +8926,7 @@ function saveGroupChat() {
         members: selectedGroupMembers,
         groupPersonas: groupPersonas,
         chatHistory: [],
-        avatar: "https://i.postimg.cc/vZM6rxmR/IMG-4644.png", // 给群聊随机弄了个默认头像
+        avatar: "https://i.postimg.cc/cJ7TGpSf/IMG-3096.jpg", // 给群聊随机弄了个默认头像
         desc: "群聊",
         memoryList: [],
         mountedSingles: [] 
@@ -9011,7 +9005,7 @@ function saveMountMemory() {
     
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeMountMemoryModal();
-    alert("记忆挂载成功!");
+    alert("✅ 记忆挂载成功！此后聊天将会带上你勾选的关联记忆。");
 }0
 // ================= 新增：真正的后台自动活跃引擎 =================
 // 这个引擎会每隔30秒检查一次所有人（包括群聊）的时间
@@ -9072,7 +9066,7 @@ function addWeightRecord() {
     localStorage.setItem('record_weights', JSON.stringify(weightRecords)); // 永久保存
     document.getElementById('weight-input').value = ''; // 清空输入框方便下次输入
     drawWeightChart(); // 重新画出最新的折线图
-    alert("体重记录成功！");
+    alert("✅ 体重记录成功！");
 }
 
 function saveDailyRecord(type) {
@@ -9082,7 +9076,7 @@ function saveDailyRecord(type) {
         return;
     }
     localStorage.setItem('record_' + type, val); // 永久保存这个数据
-    alert("保存成功！");
+    alert("✅ 保存成功！");
 }
 
 // 自动画出体重变化折线图的魔法引擎
@@ -9510,220 +9504,6 @@ async function executeAutoMomentPost(friend) {
         feed.prepend(div);
     } catch(e) { console.error("AI自动发朋友圈失败:", e); }
 }
-// =============== 新增：一起听 & 浮窗功能引擎 2.0升级版 =================
-let listeningTogetherCharId = null;
-
-// 强化：打开音乐播放器时隐藏浮窗
-const originalOpenMusicPlayer = window.openMusicPlayer;
-window.openMusicPlayer = function() {
-    if (originalOpenMusicPlayer) originalOpenMusicPlayer();
-    document.getElementById('music-floating-widget').classList.add('hidden');
-};
-
-// 强化：退出播放界面时显示封面浮窗
-const originalCloseMusicPlayer = window.closeMusicPlayer;
-window.closeMusicPlayer = function() {
-    if (originalCloseMusicPlayer) originalCloseMusicPlayer();
-    const title = document.getElementById('player-title').innerText;
-    // 只有在真的有歌曲时才显示浮窗
-    if (title && title !== '暂无歌曲') {
-        const coverSrc = document.getElementById('player-cover-img').src;
-        document.getElementById('music-floating-cover').src = coverSrc;
-        document.getElementById('music-floating-widget').classList.remove('hidden');
-    }
-};
-
-// 打开邀请弹窗
-function openListenModal() {
-    const list = document.getElementById('listen-char-list');
-    list.innerHTML = '';
-    const friends = friendList.filter(f => !f.isGroup);
-    if (friends.length === 0) {
-        list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">还没有添加角色哦</div>';
-    } else {
-        friends.forEach(f => {
-            list.innerHTML += `
-                <div class="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100 rounded-xl" onclick="sendListenInvite('${f.id}')">
-                    <img src="${f.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg'}" class="w-12 h-12 rounded-full object-cover">
-                    <span class="font-bold text-[15px] text-gray-800 flex-1">${f.remark}</span>
-                    <span class="text-[12px] bg-black text-white px-3 py-1 rounded-full font-bold">邀请</span>
-                </div>
-            `;
-        });
-    }
-    document.getElementById('listen-together-modal').classList.remove('hidden');
-}
-
-// 关闭邀请弹窗
-function closeListenModal() {
-    document.getElementById('listen-together-modal').classList.add('hidden');
-}
-
-// 在微信发送音乐卡片邀请
-async function sendListenInvite(charId) {
-    closeListenModal();
-    const friend = friendList.find(f => f.id === charId);
-    if (!friend) return;
-    
-    const songTitle = document.getElementById('player-title').innerText;
-    const songArtist = document.getElementById('player-artist').innerText;
-    const songCover = document.getElementById('player-cover-img').src;
-    
-    // 制作精美音乐卡片（为了让部分代码不包气泡，在最前面放了一个隐藏的占位img标签）
-    const cardHtml = `
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="display:none;">
-        <div class="bg-white rounded-[16px] w-[230px] shadow-md border border-gray-100 overflow-hidden cursor-pointer active:scale-95 transition-transform" onclick="openMusicPlayer()">
-            <div class="flex items-center gap-3 p-3 bg-gray-50 border-b border-gray-100">
-                <img src="${songCover}" class="w-11 h-11 rounded-full object-cover" style="animation: spin 5s linear infinite;">
-                <div class="flex-1 min-w-0">
-                    <div class="text-[14px] font-bold text-[#333] truncate">${songTitle}</div>
-                    <div class="text-[11px] text-gray-500 truncate">${songArtist}</div>
-                </div>
-            </div>
-            <div class="p-2.5 text-[11px] text-gray-500 flex justify-between items-center bg-white">
-                <span class="font-bold text-black">🎵 邀请你一起听歌</span>
-                <span class="text-[#07c160] font-bold">▶ 点击进入</span>
-            </div>
-        </div>
-    `;
-    
-    if (!friend.chatHistory) friend.chatHistory = [];
-    friend.chatHistory.push({ role: 'user', content: cardHtml });
-    
-    if (currentFriendId === charId) {
-        renderAllMessages(true);
-    }
-    // 强制刷新左侧好友列表让它生成最新消息
-    if(typeof renderFriendList === 'function') renderFriendList(); 
-    
-    alert(`已向 ${friend.remark} 发送了卡片邀请，快去微信看看TA同不同意吧！`);
-    
-    if (!config.apiKey) return;
-    let prompt = `你扮演 ${friend.realName}。设定：${friend.persona}。\n【场景】：用户刚才发了一张音乐卡片，邀请你一起听歌。歌曲是《${songTitle}》（歌手：${songArtist}）。\n【任务】：根据你的人设立刻发微信回复用户，表达你是否愿意一起听（傲娇、开心、高冷都可以，符合人设就行）。回复口语化、简短自然。`;
-    
-    try {
-        const response = await fetch(`${config.baseUrl}/chat/completions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
-            body: JSON.stringify({
-                model: config.model,
-                messages: [{ role: 'system', content: prompt }],
-                temperature: 0.8
-            })
-        });
-        const data = await response.json();
-        const reply = data.choices[0].message.content.trim();
-        
-        friend.chatHistory.push({ role: 'assistant', content: reply });
-        if (currentFriendId === charId) renderAllMessages(true);
-        if(typeof renderFriendList === 'function') renderFriendList(); 
-        localStorage.setItem('friend_list', JSON.stringify(friendList));
-        
-        listeningTogetherCharId = charId;
-    } catch(e) {}
-}
-
-// 核心：每隔15秒检查歌词并同步给AI
-let lastReportedLyrics = "";
-setInterval(async () => {
-    if (!listeningTogetherCharId || !config.apiKey) return;
-    
-    const playerTitle = document.getElementById('player-title');
-    const lyricsContainer = document.getElementById('lyrics-content');
-    
-    if (!playerTitle || !lyricsContainer) return;
-    const currentSong = playerTitle.innerText;
-    if (currentSong === '暂无歌曲') return;
-
-    let currentLyrics = "";
-    const activeLine = lyricsContainer.querySelector('.text-black, .text-white, .font-bold, .opacity-100'); 
-    if (activeLine) {
-        currentLyrics = activeLine.innerText.trim();
-    } else {
-        const lines = lyricsContainer.innerText.split('\n').filter(l => l.trim().length > 0 && !l.includes('暂无歌词'));
-        if (lines.length > 0) currentLyrics = lines[0].trim();
-    }
-
-    if (!currentLyrics || currentLyrics === lastReportedLyrics) return;
-    lastReportedLyrics = currentLyrics;
-
-    const friend = friendList.find(f => f.id === listeningTogetherCharId);
-    if (!friend) return;
-
-    if (Math.random() < 0.1) { 
-        let prompt = `你扮演 ${friend.realName}。设定：${friend.persona}。\n【场景】：你们正在连线“一起听歌”。现在手机里放着《${currentSong}》，刚好唱到了这句歌词：“${currentLyrics}”。\n【任务】：请针对这句歌词、或者当前的听歌氛围，主动给用户发一句简短的微信（字数15字内，像活人一样自然，绝不能像机器人复读歌词）。`;
-        try {
-            const response = await fetch(`${config.baseUrl}/chat/completions`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
-                body: JSON.stringify({
-                    model: config.model,
-                    messages: [{ role: 'system', content: prompt }],
-                    temperature: 0.9
-                })
-            });
-            const data = await response.json();
-            const reply = data.choices[0].message.content.trim();
-            
-            friend.chatHistory.push({ role: 'assistant', content: reply });
-            if (currentFriendId === listeningTogetherCharId) {
-                renderAllMessages(true);
-            }
-            if(typeof sendSystemNotification === 'function') {
-                sendSystemNotification(friend.remark, reply);
-            }
-            if(typeof renderFriendList === 'function') renderFriendList(); 
-            localStorage.setItem('friend_list', JSON.stringify(friendList));
-        } catch(e) {}
-    }
-}, 15000);
-
-// 核心：全自动界面修复引擎（解决卡片气泡、引文、预览问题、自动切封面）
-setInterval(() => {
-    // 1. 彻底清除聊天记录里邀请卡片外面的绿色/白色气泡，让它无缝显示
-    document.querySelectorAll('#chat-messages > div').forEach(msgWrapper => {
-        if (msgWrapper.innerHTML.includes('🎵 邀请你一起听歌')) {
-            // 找到所有可能是气泡的层，把背景和内边距掏空
-            const bubbles = msgWrapper.querySelectorAll('.bg-\\[\\#95ec69\\], .bg-white, .p-2, .p-3');
-            bubbles.forEach(bubble => {
-                bubble.classList.remove('bg-[#95ec69]', 'bg-white', 'p-2', 'p-3', 'shadow-sm', 'border', 'rounded-lg');
-                bubble.style.background = 'transparent';
-                bubble.style.padding = '0';
-            });
-        }
-        
-        // 2. 修复消息列表里引用回复时显示一长串代码的问题，改成简化的"一起听歌吧"
-        const quoteDiv = msgWrapper.querySelector('.quote-block') || msgWrapper.querySelector('.bg-black\\/5');
-        if (quoteDiv && quoteDiv.innerHTML.includes('🎵 邀请你一起听歌')) {
-            quoteDiv.innerHTML = '一起听歌吧';
-        }
-    });
-
-    // 3. 修复左侧好友列表最后一条消息预览，不要显示一整个卡片，改成显示"一起听歌吧"
-    const listContainer = document.getElementById('friend-list-container');
-    if (listContainer) {
-        // 精准寻找到显示预览小字的那个位置，直接替换，保证不破坏头像和名字
-        listContainer.querySelectorAll('.text-gray-400.truncate').forEach(el => {
-            if (el.innerHTML.includes('🎵 邀请你一起听歌')) {
-                el.innerHTML = '一起听歌吧';
-            }
-        });
-    }
-
-    // 4. 修复点击长按回复时，输入框上面的那一行预览文字
-    const replyPreview = document.getElementById('reply-preview-text');
-    if (replyPreview && replyPreview.innerHTML.includes('🎵 邀请你一起听歌')) {
-        replyPreview.innerHTML = '一起听歌吧';
-    }
-    
-    // 5. 浮窗封面自动跟随换歌切换！每隔0.5秒钟检查一次播放器封面并同步给浮窗
-    const coverImg = document.getElementById('player-cover-img');
-    const floatingCover = document.getElementById('music-floating-cover');
-    if (coverImg && floatingCover && coverImg.src && coverImg.src !== floatingCover.src) {
-        floatingCover.src = coverImg.src;
-    }
-}, 500);
-// =============== 新增：一起听 & 浮窗功能引擎 2.0升级版 结束 =================
 </script>
 </body>
 </html>
