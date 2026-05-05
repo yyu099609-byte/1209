@@ -1565,15 +1565,6 @@ openPlaylist();">
         <img id="music-floating-cover" src="" class="w-full h-full object-cover rounded-full">
     </div>
 
-    <div id="listen-together-modal" class="fixed inset-0 bg-black/60 hidden z-[150] flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-[28px] w-full max-w-sm p-6 shadow-2xl relative flex flex-col max-h-[75vh]">
-            <h3 class="font-bold text-[#333] mb-4 text-center text-[18px]">邀请谁一起听？</h3>
-            <div id="listen-char-list" class="flex-1 overflow-y-auto bg-gray-50 rounded-2xl p-2 flex flex-col gap-2 mb-5 border border-gray-100">
-            </div>
-            <button onclick="closeListenModal()" class="w-full py-3 bg-white border-2 border-gray-200 rounded-full font-bold text-gray-600 text-[16px] active:bg-gray-50 transition-colors">取消</button>
-        </div>
-    </div>
-
     <div id="music-player-screen" class="fixed inset-0 hidden flex flex-col z-[100] transition-transform duration-300 translate-y-full player-bg-adaptive" style="background-size: cover; background-position: center;">
         <div class="h-14 flex items-center justify-between px-4 mt-2 border-b pb-2 player-border-adaptive">
             <button onclick="closeMusicPlayer()" class="w-10 flex justify-start player-text-adaptive">
@@ -1581,9 +1572,6 @@ openPlaylist();">
             </button>
             <div class="flex-1 text-center font-bold text-[16px] player-text-adaptive">正在播放</div>
             <div class="w-auto flex justify-end items-center gap-3 pr-2">
-                <button onclick="openListenModal()" class="player-text-adaptive active:scale-90 transition-transform text-[12px] font-bold border border-current px-2.5 py-1 rounded-full whitespace-nowrap">
-                    一起听
-                </button>
                 <button onclick="document.getElementById('player-bg-input').click()" class="player-text-adaptive active:scale-90 transition-transform flex-shrink-0">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </button>
@@ -6624,46 +6612,44 @@ function handleIconSelect(input) {
     }
 }
 
-// 修复版：点击保存外观设置
+// 点击保存外观设置
 function saveAppearanceApp() {
     // 1. 应用壁纸
     if (tempAppearance.wallpaper) {
         document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
     }
-
-    // 2. 应用图标
+    // 2. 应用所有更改过的图标到真实桌面
     for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
             desktopImg.src = imgSrc;
+            // 如果原本是纯色占位的背景，现在去除了
             if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
         }
     }
-
-    // 3. 应用名称
+    
+    // 3. 新增：应用所有更改过的名称到真实桌面
     let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
     for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
         savedAppNames[iconId] = newName;
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
-            const parent = desktopImg.parentElement;
-            if (parent && parent.nextElementSibling) {
-                parent.nextElementSibling.innerText = newName;
+            // 通过图片往上找父元素，再找旁边的文字元素
+            const iconContainer = desktopImg.closest('.app-icon');
+            if (iconContainer && iconContainer.nextElementSibling) {
+                iconContainer.nextElementSibling.innerText = newName;
             }
         }
     }
     localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-
-    // 4. 保存聊天背景
-    if (tempAppearance.chatBg) {
+    
+    // 保存全局聊天背景到缓存
+    if (tempAppearance.chatBg !== undefined) {
         config.globalChatBg = tempAppearance.chatBg;
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
     
-    // 【关键】：点保存时触发一次全局存档，确保刷新不丢失
-    if(typeof performGlobalSave === 'function') performGlobalSave();
-
-    alert("外观设置已应用！");
+    alert("外观设置已应用到桌面！");
     closeAppearanceApp();
 }
 // ===============================
@@ -9539,34 +9525,19 @@ const originalCloseMusicPlayer = window.closeMusicPlayer;
 window.closeMusicPlayer = function() {
     if (originalCloseMusicPlayer) originalCloseMusicPlayer();
     const title = document.getElementById('player-title').innerText;
-    
-    // 【修改点】：只有在真的有歌曲，并且【已经发出了邀请（处于一起听状态）】时才显示浮窗
-    if (title && title !== '暂无歌曲' && listeningTogetherCharId !== null) {
+    // 只有在真的有歌曲时才显示浮窗
+    if (title && title !== '暂无歌曲') {
         const coverSrc = document.getElementById('player-cover-img').src;
         document.getElementById('music-floating-cover').src = coverSrc;
         document.getElementById('music-floating-widget').classList.remove('hidden');
-    } else {
-        // 【修改点】：如果没有一起听，或者没有歌，则强制隐藏浮窗
-        document.getElementById('music-floating-widget').classList.add('hidden');
     }
 };
 
 // 打开邀请弹窗
 function openListenModal() {
-    // 【修改点】：新增退出功能。如果当前已经在“一起听”状态，再次点击将询问是否退出
-    if (listeningTogetherCharId !== null) {
-        if (confirm("当前正在和好友一起听歌，是否要退出一起听？")) {
-            listeningTogetherCharId = null; // 清除一起听状态
-            document.getElementById('music-floating-widget').classList.add('hidden'); // 立刻隐藏悬浮球
-            alert("已退出一起听！");
-        }
-        return; // 结束函数，不再弹出好友列表
-    }
-
     const list = document.getElementById('listen-char-list');
     list.innerHTML = '';
     const friends = friendList.filter(f => !f.isGroup);
-    
     if (friends.length === 0) {
         list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">还没有添加角色哦</div>';
     } else {
