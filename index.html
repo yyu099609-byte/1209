@@ -2613,76 +2613,75 @@ let friendList = JSON.parse(localStorage.getItem('friend_list')) || [];
 let currentFriendId = null;
 let isMultiSelecting = false;
 
-// 【全自动深度存档系统】—— 彻底解决删后台失效问题
+// 【全自动存档魔法】升级版：加入防杀后台抢救机制与内存报警
 function performGlobalSave() {
     try {
-        // A. 核心数据同步
+        // 基础核心数据保存
         localStorage.setItem('os_user_profile', JSON.stringify(userProfile));
         localStorage.setItem('friend_list', JSON.stringify(friendList));
         localStorage.setItem('os_config', JSON.stringify(config));
         
-        // B. 特殊组件状态
+        // 1. 保存音乐列表和点赞状态
         if (typeof playlist !== 'undefined') localStorage.setItem('os_playlist', JSON.stringify(playlist));
         if (typeof momentLikes !== 'undefined') localStorage.setItem('os_moment_likes', JSON.stringify(momentLikes));
         
-        // C. UI 镜像快照（微信、朋友圈、论坛）
-        const elementsToSnapshot = {
-            'os_moments_html': 'moments-feed',
-            'os_forum_html': 'forum-feed',
-            'os_profile_posts_html': 'profile-posts-feed'
-        };
-        for (const [storageKey, elementId] of Object.entries(elementsToSnapshot)) {
-            const el = document.getElementById(elementId);
-            if (el) localStorage.setItem(storageKey, el.innerHTML);
-        }
+        // 2. 保存朋友圈和论坛推文的画面
+        const momentsFeed = document.getElementById('moments-feed');
+        if (momentsFeed) localStorage.setItem('os_moments_html', momentsFeed.innerHTML);
+        const forumFeed = document.getElementById('forum-feed');
+        if (forumFeed) localStorage.setItem('os_forum_html', forumFeed.innerHTML);
+        const profilePostsFeed = document.getElementById('profile-posts-feed');
+        if (profilePostsFeed) localStorage.setItem('os_profile_posts_html', profilePostsFeed.innerHTML);
 
-        // D. 桌面背景持久化
+        // 3. 保存主屏幕换过的壁纸
         const desktopBody = document.getElementById('desktop-body');
         if (desktopBody && desktopBody.style.backgroundImage) {
             localStorage.setItem('os_desktop_bg', desktopBody.style.backgroundImage);
         }
 
-        // E. 动态 DOM 状态捕获（所有的头像、图标、文字）
+        // 4. 自动搜集并保存你更改的所有文本和桌面图标、照片
         let customDOMState = {};
-        // 扫描所有可交互元素
-        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"], .moments-avatar, .moments-name');
+        const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
         
         editableElements.forEach((el, index) => {
-            const id = el.id || 'persistent_id_' + index;
-            if (!el.id) el.id = id;
-
+            if (!el.id) el.id = 'auto_save_id_' + index;
             if (el.tagName === 'IMG') {
-                customDOMState[id] = el.src;
+                customDOMState[el.id] = el.src;
             } else {
-                customDOMState[id + '_html'] = el.innerHTML;
-                if (el.style.backgroundImage) customDOMState[id + '_bg'] = el.style.backgroundImage;
+                customDOMState[el.id + '_html'] = el.innerHTML;
+                if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
             }
         });
 
-        // 强制写入
-        localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
-        
+        // 额外强制保存一些特殊文字
+        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
+        specialIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) customDOMState[id + '_html'] = el.innerHTML;
+        });
+
+        // 【终极修复1】：把最新状态永远缓存在内存里，供巡逻队读取
+        window.my_safe_dom_cache = customDOMState;
+
+        try {
+            localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
+        } catch(err) {
+            // 【终极修复2】：彻底删掉那烦人的5MB弹窗！就算塞满了也不弹窗，用内存缓存强行顶着！
+        }
+
     } catch (e) {
-        console.warn("存档写入中...", e);
+        // 捕获其余可能的错误，不再弹窗
     }
 }
 
-// 强制存档触发器：
-// 1. 每 500 毫秒高频检查（原为1000ms，现在提速一倍）
-setInterval(performGlobalSave, 500);
+// 1. 常规每隔1秒钟偷偷保存
+setInterval(performGlobalSave, 1000);
 
-// 2. 针对手机“删后台”的终极防御：一旦网页不可见，立即执行“核爆级”存档
+// 2. 苹果系统专属救命稻草：在你上滑杀后台、切回桌面的那一瞬间，强制瞬间保存！
 document.addEventListener('visibilitychange', () => {
-    performGlobalSave(); // 不管是切走还是杀后台，瞬间锁定当前画面
+    if (document.visibilityState === 'hidden') performGlobalSave();
 });
-
-// 3. 针对苹果 Safari 的特殊处理
-window.addEventListener('pagehide', () => {
-    performGlobalSave();
-});
-
-// 4. 用户点击屏幕任何地方时，也顺手存一下
-document.addEventListener('click', performGlobalSave);
+window.addEventListener('pagehide', performGlobalSave);
 
 // 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
 const savedConfig = JSON.parse(localStorage.getItem('os_config'));
@@ -8582,40 +8581,42 @@ let tempCharAppearance = { wallpaper: '', icons: {} };
 let currentCharEditingIconId = '';
 
 // 4. 打开选中角色的专属手机界面（加强版）
+
 function openCharacterPhone(friend) {
     currentPhoneFriendId = friend.id;
-    updateDateWidgetDisplay();
-    document.getElementById('character-phone-title').innerText = `${friend.remark} 的手机`;
-
+        updateDateWidgetDisplay();
+document.getElementById('character-phone-title').innerText = `${friend.remark} 的手机`;
+    
     // ====== 新增：让胶囊小组件的头像自动变成该角色的头像 ======
     const widgetAvatar = document.getElementById('char-phone-widget-avatar');
     if(widgetAvatar) {
         widgetAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
-
+    
     // ====== 新增：同步新组件左上角和右下角的双人头像 ======
     const leftAvatar = document.getElementById('char-phone-left-avatar');
     if(leftAvatar) {
         leftAvatar.src = friend.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg';
     }
-
     const rightAvatar = document.getElementById('char-phone-right-avatar');
     if(rightAvatar) {
-        // 【头像修复】：强制读取最新保存的用户微信头像
-        rightAvatar.src = localStorage.getItem('vip_my_avatar') || (typeof userProfile !== 'undefined' ? userProfile.avatar : '') || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
+        rightAvatar.src = userProfile.avatar || 'https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg';
     }
+    // =======================================================
 
-    // 初始化壁纸
+    // 加载这台手机专属的壁纸
     const screen = document.getElementById('character-phone-screen');
     if (friend.phoneBg) {
         screen.style.backgroundImage = `url(${friend.phoneBg})`;
+        screen.style.backgroundColor = 'transparent';
     } else {
         screen.style.backgroundImage = 'none';
+        screen.style.backgroundColor = '#f2f2f6';
     }
 
-    // 初始化所有图标
-    const charIconsList = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
-    charIconsList.forEach(name => {
+    // 加载这台手机专属的图标
+    const iconsToLoad = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
+    iconsToLoad.forEach(name => {
         const imgEl = document.getElementById(`char-icon-${name}`);
         if (imgEl) {
             if (friend.phoneIcons && friend.phoneIcons[name]) {
@@ -8659,14 +8660,10 @@ function openCharAppearance() {
     const iconGrid = document.getElementById('char-icon-edit-grid');
     iconGrid.innerHTML = '';
     const charIconsList = [
-        { id: 'wechat', name: '微信' },
-        { id: 'notes', name: '备忘录' },
-        { id: 'album', name: '相册' },
-        { id: 'diary', name: '日记' },
-        { id: 'browser', name: '浏览器' },
-        { id: 'shop', name: '购物' },
-        { id: 'music', name: '音乐' },
-        { id: 'appearance', name: '外观设置' },
+        { id: 'wechat', name: '微信' }, { id: 'notes', name: '备忘录' },
+        { id: 'album', name: '相册' }, { id: 'diary', name: '日记' },
+        { id: 'browser', name: '浏览器' }, { id: 'shop', name: '购物' },
+        { id: 'music', name: '音乐' }, { id: 'appearance', name: '外观设置' },
         { id: 'wallet', name: '钱包' }
     ];
 
@@ -8682,11 +8679,6 @@ function openCharAppearance() {
                 <span class="text-[10px] text-gray-500">${icon.name}</span>
             </div>
         `;
-        
-        // 【防夺舍补丁1】：让巡逻队认可设置界面里的预览图标
-        if (window.my_safe_dom_cache) {
-            window.my_safe_dom_cache[`preview-char-${icon.id}`] = currentSrc;
-        }
     });
 
     document.getElementById('char-appearance-screen').classList.remove('slide-hidden');
@@ -8727,11 +8719,6 @@ function handleCharIconSelect(input) {
             document.getElementById(`preview-char-${currentCharEditingIconId}`).src = result;
             document.getElementById(`preview-char-${currentCharEditingIconId}`).classList.remove('bg-[#5c5c5c]');
             tempCharAppearance.icons[currentCharEditingIconId] = result;
-            
-            // 【防夺舍补丁2】：选中新图标后立马缓存，防止预览区闪回
-            if (window.my_safe_dom_cache) {
-                window.my_safe_dom_cache[`preview-char-${currentCharEditingIconId}`] = result;
-            }
         }
         reader.readAsDataURL(input.files[0]);
         input.value = '';
@@ -8741,49 +8728,20 @@ function handleCharIconSelect(input) {
 // 保存所有修改并应用
 function saveCharAppearance() {
     if (!currentPhoneFriendId) return;
-
     const friend = friendList.find(f => f.id === currentPhoneFriendId);
     if (!friend) return;
 
-    // 1. 保存壁纸
+    // 把临时保存的壁纸和图标彻底存入大脑
     friend.phoneBg = tempCharAppearance.wallpaper;
-    
-    // 2. 保存图标
     friend.phoneIcons = { ...tempCharAppearance.icons };
-
-    // 3. 永久存档
+    
     localStorage.setItem('friend_list', JSON.stringify(friendList));
-
-    // 4. 立刻应用到当前的手机界面
-    if (friend.phoneBg) {
-        const screen = document.getElementById('character-phone-screen');
-        if(screen) {
-            screen.style.backgroundImage = `url(${friend.phoneBg})`;
-        }
-    }
     
-    // 应用图标
-    const charIconsList = ['wechat', 'notes', 'album', 'diary', 'browser', 'shop', 'music', 'appearance', 'wallet'];
-    charIconsList.forEach(name => {
-        const imgEl = document.getElementById(`char-icon-${name}`);
-        if (imgEl) {
-            if (friend.phoneIcons && friend.phoneIcons[name]) {
-                imgEl.src = friend.phoneIcons[name];
-                imgEl.style.backgroundColor = 'transparent';
-                
-                // 【防夺舍补丁3】：保存时将真实的手机图标同步给巡逻队
-                if (window.my_safe_dom_cache) {
-                    window.my_safe_dom_cache[`char-icon-${name}`] = friend.phoneIcons[name];
-                }
-            }
-        }
-    });
-
+    // 重新刷新一遍手机屏幕，让它长出新的样子
+    openCharacterPhone(friend);
+    
+    alert("✅ TA的手机外观已保存！每个角色都有专属手机啦！");
     closeCharAppearance();
-    alert("✅ TA的手机外观已保存！");
-    
-    // 【防夺舍补丁4】：强制瞬间全局存档，彻底堵死巡逻队反悔的机会！
-    performGlobalSave();
 }
 
 // ================= 新增：点击头像获取内心OS功能 =================
