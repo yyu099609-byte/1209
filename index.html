@@ -6525,17 +6525,17 @@ function openAppearanceApp() {
         document.getElementById('global-chat-bg-hint').classList.remove('hidden');
     }
 
-    // 获取并显示所有桌面图标当前的状态
+    // 获取并显示所有桌面图标
     const iconGrid = document.getElementById('icon-edit-grid');
     iconGrid.innerHTML = '';
     const iconsList = [
         { id: 'icon-wechat', name: '微信' },
         { id: 'icon-lorebook', name: '世界书' },
-        { id: 'icon-placeholder2', name: '记录' },
         { id: 'icon-forum', name: '论坛' },
-        { id: 'icon-sms', name: '信息' },
+        { id: 'icon-sms', name: '短信' },
         { id: 'icon-settings', name: '设置' },
-        { id: 'icon-appearance', name: '外观' },
+        { id: 'icon-appearance', name: '外观设置' },
+        { id: 'icon-placeholder2', name: '记录' },
         { id: 'icon-placeholder4', name: '查手机' },
         // === 这里把外卖和默契比心加进去了 ===
         { id: 'icon-mqbx', name: '默契比心' },
@@ -6544,14 +6544,11 @@ function openAppearanceApp() {
 
     // 获取已经保存过的自定义名称
     const savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
-
     iconsList.forEach(icon => {
         const desktopImg = document.getElementById(icon.id);
         const currentSrc = tempAppearance.icons[icon.id] || (desktopImg ? desktopImg.src : '');
-        
         // 决定显示的名字：优先用刚刚暂存的，其次用以前保存过的，最后用默认的
         const displayName = tempAppearance.names[icon.id] || savedAppNames[icon.id] || icon.name;
-
         iconGrid.innerHTML += `
             <div class="flex flex-col items-center gap-1">
                 <div class="w-12 h-12 rounded-[10px] overflow-hidden shadow-sm border border-gray-100 bg-gray-200 cursor-pointer active:scale-95 transition-transform" onclick="triggerIconEdit('${icon.id}')">
@@ -6560,13 +6557,19 @@ function openAppearanceApp() {
                 <span id="preview-name-${icon.id}" class="text-[10px] text-gray-500 cursor-pointer hover:text-black underline decoration-gray-300 underline-offset-2 px-1" onclick="editAppearanceAppName('${icon.id}', '${displayName}')">${displayName}</span>
             </div>
         `;
+        
+        // 【防夺舍终极补丁1】：在界面生成的瞬间，告诉巡逻队预览图的新样子，禁止恢复成旧图标！
+        if (window.my_safe_dom_cache) {
+            window.my_safe_dom_cache[`preview-${icon.id}`] = currentSrc;
+        }
     });
 }
 
 function closeAppearanceApp() {
     document.getElementById('appearance-app-screen').classList.add('slide-hidden');
     tempAppearance.icons = {}; // 清除未保存的暂存状态
-    tempAppearance.names = {}; // 新增：清除未保存的文字状态
+    tempAppearance.names = {};
+    // 新增：清除未保存的文字状态
 }
 
 // 处理壁纸选择
@@ -6599,6 +6602,12 @@ function handleIconSelect(input) {
             document.getElementById(`preview-${currentEditingIconId}`).src = result;
             // 暂存更改，等点了保存再生效
             tempAppearance.icons[currentEditingIconId] = result;
+            
+            // 【防夺舍终极补丁2】：选择完图片的0.1秒内立刻捂住巡逻队的眼睛，强制更新缓存给它看！
+            if (window.my_safe_dom_cache) {
+                window.my_safe_dom_cache[`preview-${currentEditingIconId}`] = result;
+            }
+
             // 清空 input 允许重复选择同一张
             input.value = '';
         }
