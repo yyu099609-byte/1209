@@ -6673,34 +6673,25 @@ function handleIconSelect(input) {
 function saveAppearanceApp() {
     // 1. 应用壁纸
     if (tempAppearance.wallpaper) {
-        const bgValue = `url(${tempAppearance.wallpaper})`;
-        document.getElementById('desktop-body').style.backgroundImage = bgValue;
-        localStorage.setItem('os_desktop_bg', bgValue);
+        document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
     }
-
-    // 2. 先读取已经保存过的桌面图标
-    let savedDesktopIcons = JSON.parse(localStorage.getItem('os_desktop_icons')) || {};
-
-    // 3. 应用所有更改过的图标到真实桌面，并且立刻单独保存
+    // 2. 应用所有更改过的图标到真实桌面
     for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
             desktopImg.src = imgSrc;
-            if (desktopImg.style.backgroundColor) {
-                desktopImg.style.backgroundColor = 'transparent';
-            }
+            // 如果原本是纯色占位的背景，现在去除了
+            if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
         }
-        savedDesktopIcons[iconId] = imgSrc;
     }
-
-    localStorage.setItem('os_desktop_icons', JSON.stringify(savedDesktopIcons));
-
-    // 4. 应用所有更改过的名称到真实桌面，并且保存
+    
+    // 3. 新增：应用所有更改过的名称到真实桌面
     let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
     for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
         savedAppNames[iconId] = newName;
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
+            // 通过图片往上找父元素，再找旁边的文字元素
             const iconContainer = desktopImg.closest('.app-icon');
             if (iconContainer && iconContainer.nextElementSibling) {
                 iconContainer.nextElementSibling.innerText = newName;
@@ -6708,27 +6699,13 @@ function saveAppearanceApp() {
         }
     }
     localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-
-    // 5. 保存全局聊天背景
+    
+    // 保存全局聊天背景到缓存
     if (tempAppearance.chatBg !== undefined) {
         config.globalChatBg = tempAppearance.chatBg;
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
-
-    // 6. 额外把这次最新画面立刻写进总缓存，防止旧缓存把新图标顶回去
-    try {
-        let savedCustomState = JSON.parse(localStorage.getItem('os_custom_dom_state')) || {};
-        for (const [iconId, imgSrc] of Object.entries(savedDesktopIcons)) {
-            savedCustomState[iconId] = imgSrc;
-        }
-        localStorage.setItem('os_custom_dom_state', JSON.stringify(savedCustomState));
-    } catch (e) {}
-
-    // 7. 立刻执行一次全局保存，别再等每秒自动保存
-    if (typeof performGlobalSave === 'function') {
-        performGlobalSave();
-    }
-
+    
     alert("✅ 外观设置已应用到桌面！");
     closeAppearanceApp();
 }
@@ -6780,18 +6757,6 @@ window.onload = () => {
     if (savedBg) {
         const desktopBody = document.getElementById('desktop-body');
         if (desktopBody) desktopBody.style.backgroundImage = savedBg;
-    }
-
-    // 4.5 恢复桌面图标（这是这次修复闪烁和变回默认图标的关键）
-    const savedDesktopIcons = JSON.parse(localStorage.getItem('os_desktop_icons')) || {};
-    for (const [iconId, imgSrc] of Object.entries(savedDesktopIcons)) {
-        const desktopImg = document.getElementById(iconId);
-        if (desktopImg && imgSrc) {
-            desktopImg.src = imgSrc;
-            if (desktopImg.style.backgroundColor) {
-                desktopImg.style.backgroundColor = 'transparent';
-            }
-        }
     }
 
     // 5. 还原前，先按同样的顺序给没有名字的元素打上对应编号
