@@ -6612,6 +6612,7 @@ function saveAppearanceApp() {
     if (tempAppearance.wallpaper) {
         document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
     }
+
     // 2. 应用所有更改过的图标到真实桌面
     for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
@@ -6621,7 +6622,7 @@ function saveAppearanceApp() {
             if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
         }
     }
-    
+
     // 3. 新增：应用所有更改过的名称到真实桌面
     let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
     for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
@@ -6636,15 +6637,18 @@ function saveAppearanceApp() {
         }
     }
     localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-    
+
     // 保存全局聊天背景到缓存
     if (tempAppearance.chatBg !== undefined) {
         config.globalChatBg = tempAppearance.chatBg;
         localStorage.setItem('globalChatBg', tempAppearance.chatBg);
     }
-    
+
     alert("✅ 外观设置已应用到桌面！");
     closeAppearanceApp();
+
+    // 【新增防夺舍补丁】：保存完毕的瞬间立刻强行写进本地存档，不给巡逻队任何覆盖的机会！
+    performGlobalSave();
 }
 // ===============================
 
