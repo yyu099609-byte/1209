@@ -1649,8 +1649,9 @@ rounded-[15px] shadow-sm">
             <input id="new-song-artist" type="text" placeholder="歌手名称" class="w-full glass-input rounded-xl px-4 py-2.5 mb-3 outline-none text-[14px]">
             
             <div class="mb-3 glass-input p-3 rounded-xl">
-                <label class="block text-[12px] player-text-muted mb-1.5 font-bold">1. 封面图片 (放开限制)</label>
-                <input type="file" id="new-song-cover" class="text-[11px] w-full">
+                <label class="block text-[12px] player-text-muted mb-1.5 font-bold">1. 封面图片 (上传或链接)</label>
+                <input type="file" id="new-song-cover" class="text-[11px] w-full mb-2">
+                <input id="new-song-cover-url" type="text" placeholder="或粘贴封面图片URL链接..." class="w-full bg-black/5 border-none rounded-lg px-3 py-2 outline-none text-[12px]">
             </div>
             
             <div class="mb-3 glass-input p-3 rounded-xl">
@@ -8484,10 +8485,13 @@ let tempAudioBase64 = null;
 
 function openAddSongModal() {
     document.getElementById('add-song-modal').classList.remove('hidden');
-    ['new-song-title', 'new-song-artist', 'new-song-audio-url', 'new-song-lrc-text', 'new-song-cover', 'new-song-audio-file'].forEach(id => {
-        const el = document.getElementById(id); if(el) el.value = '';
+    // 这里增加了对 new-song-cover-url 的清空
+    ['new-song-title', 'new-song-artist', 'new-song-audio-url', 'new-song-cover-url', 'new-song-lrc-text', 'new-song-cover', 'new-song-audio-file'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
     });
-    tempCoverBase64 = null; tempAudioBase64 = null;
+    tempCoverBase64 = null;
+    tempAudioBase64 = null;
 }
 
 function closeAddSongModal() { document.getElementById('add-song-modal').classList.add('hidden'); }
@@ -8523,15 +8527,17 @@ document.getElementById('new-song-audio-file').addEventListener('change', functi
 });
 
 async function saveNewSong() {
-    // 1. 获取输入框里的内容
+    // 1. 获取所有输入框的内容
     const titleEl = document.getElementById('new-song-title');
     const artistEl = document.getElementById('new-song-artist');
     const audioUrlEl = document.getElementById('new-song-audio-url');
+    const coverUrlEl = document.getElementById('new-song-cover-url'); // 新增：封面链接框
     const lrcTextEl = document.getElementById('new-song-lrc-text');
 
     const title = titleEl ? titleEl.value.trim() : "";
     const artist = (artistEl && artistEl.value.trim()) ? artistEl.value.trim() : '未知歌手';
     const audioUrl = audioUrlEl ? audioUrlEl.value.trim() : "";
+    const coverUrl = coverUrlEl ? coverUrlEl.value.trim() : ""; // 获取封面链接
     const lrcText = lrcTextEl ? lrcTextEl.value.trim() : "";
 
     // 2. 检查必填项
@@ -8545,44 +8551,29 @@ async function saveNewSong() {
     }
 
     try {
-        // 3. 生成唯一的 ID
         const songId = "m_" + Date.now();
 
-        // 4. 处理音频数据
+        // 3. 处理音频数据
         if (tempAudioBase64) {
-            // 如果是文件，存入大仓库 (IndexedDB)，这里空间很大，一般不会满
             await musicDB.save(songId, tempAudioBase64);
         }
+
+        // 4. 重点逻辑：优先用上传的图(tempCoverBase64)，没有就用填写的链接(coverUrl)，再没有用默认图
+        let finalCover = tempCoverBase64 || coverUrl || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg";
 
         // 5. 打包歌曲信息
         const newSong = {
             title: title,
             artist: artist,
-            // 重点：如果封面图太大，它是导致“添加失败”的元凶
-            cover: tempCoverBase64 || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg",
+            cover: finalCover,
             audioId: songId,
             audioSrc: audioUrl || "", 
             lrc: lrcText
         };
 
-        // 6. 尝试保存到列表
+        // 6. 保存到播放列表
         playlist.push(newSong);
-        
-        try {
-            localStorage.setItem('os_playlist', JSON.stringify(playlist));
-        } catch (e) {
-            // 如果这里报错，说明 LocalStorage 真的满了
-            if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-                playlist.pop(); // 撤销刚才的添加
-                alert("❌ 保存失败：手机存储空间已满！\n\n原因：你可能添加了太多带封面的歌曲。建议长按删除几首旧歌，或者添加时不上传封面图。");
-                return;
-            }
-            throw e; // 其他错误往外抛
-        }
-
-        // 7. 成功后清理临时变量，释放内存
-        tempAudioBase64 = null;
-        tempCoverBase64 = null;
+        localStorage.setItem('os_playlist', JSON.stringify(playlist));
 
         alert("🎵 添加成功！");
         closeAddSongModal();
