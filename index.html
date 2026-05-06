@@ -6648,49 +6648,58 @@ function handleIconSelect(input) {
 }
 
 // 点击保存外观设置
+// 【彻底修复版】外观设置保存函数
 function saveAppearanceApp() {
-    // 1. 应用壁纸
-    if (tempAppearance.wallpaper) {
-        document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
-    }
-
-    // 2. 应用所有更改过的图标到真实桌面
-    for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
-        const desktopImg = document.getElementById(iconId);
-        if (desktopImg) {
-            desktopImg.src = imgSrc;
-            // 如果原本是纯色占位的背景，现在去除了
-            if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
+    try {
+        // 1. 应用主屏幕壁纸
+        if (tempAppearance.wallpaper) {
+            const desktopBody = document.getElementById('desktop-body');
+            if (desktopBody) {
+                desktopBody.style.backgroundImage = `url(${tempAppearance.wallpaper})`;
+                desktopBody.style.backgroundSize = 'cover';
+                desktopBody.style.backgroundPosition = 'center';
+            }
+            localStorage.setItem('os_desktop_bg', `url(${tempAppearance.wallpaper})`);
         }
-    }
 
-    // 3. 新增：应用所有更改过的名称到真实桌面
-    let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
-    for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
-        savedAppNames[iconId] = newName;
-        const desktopImg = document.getElementById(iconId);
-        if (desktopImg) {
-            // 通过图片往上找父元素，再找旁边的文字元素
-            const iconContainer = desktopImg.closest('.app-icon');
-            if (iconContainer && iconContainer.nextElementSibling) {
-                iconContainer.nextElementSibling.innerText = newName;
+        // 2. 应用图标
+        for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
+            const desktopImg = document.getElementById(iconId);
+            if (desktopImg) {
+                desktopImg.src = imgSrc;
             }
         }
+
+        // 3. 应用并保存APP名称
+        let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
+        for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
+            savedAppNames[iconId] = newName;
+            const desktopImg = document.getElementById(iconId);
+            if (desktopImg) {
+                const iconContainer = desktopImg.closest('.app-icon');
+                if (iconContainer && iconContainer.nextElementSibling) {
+                    iconContainer.nextElementSibling.innerText = newName;
+                }
+            }
+        }
+        localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
+
+        // 4. 保存全局聊天背景（核心修复点）
+        if (tempAppearance.chatBg !== undefined) {
+            config.globalChatBg = tempAppearance.chatBg;
+            localStorage.setItem('globalChatBg', tempAppearance.chatBg);
+            localStorage.setItem('os_config', JSON.stringify(config)); // 强制写回配置
+        }
+
+        alert("外观设置保存成功！删后台也不会丢了↖(^ω^)↗");
+        closeAppearanceApp();
+        performGlobalSave(); // 触发终极存档
+    } catch (err) {
+        console.error("保存失败:", err);
+        alert("保存出错，请检查图片是否过大！");
     }
-    localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-
-    // 保存全局聊天背景到缓存
-    if (tempAppearance.chatBg !== undefined) {
-        config.globalChatBg = tempAppearance.chatBg;
-        localStorage.setItem('globalChatBg', tempAppearance.chatBg);
-    }
-
-    alert("外观设置已应用到桌面！");
-    closeAppearanceApp();
-
-    // 【新增防夺舍补丁】：保存完毕的瞬间立刻强行写进本地存档，不给巡逻队任何覆盖的机会！
-    performGlobalSave();
 }
+
 // ===============================
 
 updateWidgetTime();
@@ -7601,38 +7610,99 @@ function openBubbleSettings() {
     document.getElementById('bubble-settings-page').classList.remove('slide-hidden');
 }
 
-// 处理上传并更改你在这个聊天的专属头像
-function handleUserChatAvatar(input) {
+// 【修复版】处理上传并更改单个好友的专属聊天背景
+function handleSingleChatBg(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = e => {
             const base64 = e.target.result;
             const friend = friendList.find(f => f.id === currentFriendId);
-            if(friend) {
-                friend.userAvatar = base64; 
+            if (friend) {
+                friend.chatBg = base64;
+                const singleBgImg = document.getElementById('preview-single-chat-bg');
+                const singleBgHint = document.getElementById('single-chat-bg-hint');
+                singleBgImg.src = base64;
+                singleBgImg.classList.remove('hidden');
+                singleBgHint.classList.add('hidden');
+                
+                // 修复：更新背景并立即执行全局保存
+                const chatContainer = document.getElementById('chat-flow').parentElement;
+                chatContainer.style.backgroundImage = `url(${base64})`;
+                chatContainer.style.backgroundSize = 'cover';
+                chatContainer.style.backgroundPosition = 'center';
+                chatContainer.classList.remove('bg-[#ededed]');
+                
                 localStorage.setItem('friend_list', JSON.stringify(friendList));
-                document.getElementById('preview-user-chat-avatar').src = base64;
-                document.getElementById('preview-user-chat-avatar').classList.remove('hidden');
-                document.getElementById('user-chat-avatar-hint').classList.add('hidden');
-                renderAllMessages(false); // 立刻刷新背景和气泡
+                performGlobalSave(); 
             }
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
-// 清除专属头像，恢复全局默认微信头像
-function clearUserChatAvatar() {
+// 【修复版】清除单个好友背景
+function clearSingleChatBg() {
     const friend = friendList.find(f => f.id === currentFriendId);
     if(friend) {
-        friend.userAvatar = null;
+        friend.chatBg = null;
+        document.getElementById('preview-single-chat-bg').src = '';
+        document.getElementById('preview-single-chat-bg').classList.add('hidden');
+        document.getElementById('single-chat-bg-hint').classList.remove('hidden');
+        
+        const chatContainer = document.getElementById('chat-flow').parentElement;
+        if (config.globalChatBg) {
+            chatContainer.style.backgroundImage = `url(${config.globalChatBg})`;
+        } else {
+            chatContainer.style.backgroundImage = 'none';
+            chatContainer.classList.add('bg-[#ededed]');
+        }
         localStorage.setItem('friend_list', JSON.stringify(friendList));
-        document.getElementById('preview-user-chat-avatar').src = '';
-        document.getElementById('preview-user-chat-avatar').classList.add('hidden');
-        document.getElementById('user-chat-avatar-hint').classList.remove('hidden');
-        renderAllMessages(false); // 立刻刷新气泡
+        performGlobalSave();
     }
 }
+
+// 【修复版】处理上传并更改你在这个聊天的专属头像
+function handleUserChatAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const base64 = e.target.result;
+            const friend = friendList.find(f => f.id === currentFriendId);
+            if (friend) {
+                friend.userAvatar = base64;
+                const userAvatarImg = document.getElementById('preview-user-chat-avatar');
+                const userAvatarHint = document.getElementById('user-chat-avatar-hint');
+                userAvatarImg.src = base64;
+                userAvatarImg.classList.remove('hidden');
+                userAvatarHint.classList.add('hidden');
+                renderAllMessages(false);
+                
+                localStorage.setItem('friend_list', JSON.stringify(friendList));
+                performGlobalSave();
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// 【新增修复】专门解决好友个人信息里的头像更改无法保存的问题
+window.changeFriendAvatar = function(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const friend = friendList.find(f => f.id === currentFriendId);
+            if (friend) {
+                friend.avatar = e.target.result;
+                document.getElementById('fi-avatar').src = friend.avatar;
+                localStorage.setItem('friend_list', JSON.stringify(friendList));
+                renderFriendList(); // 刷新好友列表显示
+                performGlobalSave();
+                alert("好友头像已保存！");
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
 
 function closeBubbleSettings() {
     document.getElementById('bubble-settings-page').classList.add('slide-hidden');
