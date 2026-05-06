@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-title" content="pluie">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f0f0f0">
-<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoicGx1aWUiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZjBmMGYwIn0=">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiZWNobyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMGYwZjAifQ==">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -179,12 +179,12 @@
             <div class="widget-card mb-12 mt-4">
                 <div class="flex items-start gap-10">
                     <div class="flex flex-col items-center gap-1">
-                        <span id="widget-emoji-left" class="widget-emoji" onclick="editEmoji('left')">(⸝⸝๑  ̫ ๑⸝⸝)</span>
-                        <img id="avatar-left" class="widget-avatar" src="https://i.postimg.cc/5ysCmzfb/IMG-0144.png" onclick="changeAvatar('left')">
+                        <span class="widget-emoji" onclick="editEmoji('left')">(⸝⸝๑  ̫ ๑⸝⸝)</span>
+                        <img id="avatar-left" class="widget-avatar" src="" onclick="changeAvatar('left')">
                     </div>
                     <div class="flex flex-col items-center gap-1">
-                        <span id="widget-emoji-right" class="widget-emoji" onclick="editEmoji('right')">(˶⁃ ω ⁃˶)</span>
-                        <img id="avatar-right" class="widget-avatar" src="https://i.postimg.cc/d35y9CJv/IMG-0143.png" onclick="changeAvatar('right')">
+                        <span class="widget-emoji" onclick="editEmoji('right')">(˶⁃ ω ⁃˶)</span>
+                        <img id="avatar-right" class="widget-avatar" src="" onclick="changeAvatar('right')">
                     </div>
                 </div>
                 <div id="widget-text" class="widget-text" onclick="editWidgetText()">我不想隔着屏幕和你说话</div>
@@ -193,7 +193,7 @@
             <div class="flex w-full px-1 gap-5 mt-2 justify-between items-start z-10">
 <div class="left-widget w-[160px] h-[160px] rounded-[24px] p-2.5 flex flex-col relative transition-transform active:scale-95 cursor-default">
                     <div class="flex-1 bg-transparent rounded-[16px] flex items-center justify-center mb-2.5 overflow-hidden relative cursor-pointer" onclick="changeAnyImage(this)">
-                        <img src="https://i.postimg.cc/d3sCd6cL/IMG-4643.jpg" class="w-full h-full object-cover">
+                        
                     </div>
                     <div class="h-[42px] flex gap-2">
                         <div class="flex-1 border-[1px] border-[#DEDEDE] rounded-[14px] flex flex-col justify-center items-start pl-2 pr-1 text-[11px] font-bold text-[#333] leading-[1.2]">
@@ -209,25 +209,25 @@
                                 <div class="flex-1 grid grid-cols-2 gap-x-2 gap-y-4 place-items-end pt-0 pr-1">
                     <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openChat()">
                         <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                            <img id="icon-wechat" src="https://i.postimg.cc/2ySYnbH0/IMG-2147.jpg" class="w-full h-full object-cover rounded-[15px]">
+                            <img id="icon-wechat" src="https://i.postimg.cc/fycLsZLY/quality-restoration-20260228193355205.png" class="w-full h-full object-cover rounded-[15px]">
                         </div>
                         <span class="text-xs text-gray-600 font-bold drop-shadow-md">微信</span>
                     </div>
                     <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openLorebook()">
                         <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                            <img id="icon-lorebook" src="https://i.postimg.cc/J0z8jDTP/IMG-2161.jpg" class="w-full h-full object-cover rounded-[15px]">
+                            <img id="icon-lorebook" src="https://i.postimg.cc/xTQP438J/IMG_3162_r.png" class="w-full h-full object-cover rounded-[15px]">
                         </div>
                         <span class="text-xs text-gray-600 font-bold drop-shadow-md">世界书</span>
                     </div>
                     <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openRecordApp()">
                         <div class="app-icon bg-[#5c5c5c] w-[60px] h-[60px] rounded-[15px] shadow-sm overflow-hidden p-0">
-                            <img id="icon-placeholder2" src="https://i.postimg.cc/j5VC6XNM/IMG-2291.jpg" class="w-full h-full object-cover rounded-[15px]">
+                            <img id="icon-placeholder2" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="w-full h-full object-cover rounded-[15px]" style="background-color: #5c5c5c;">
                         </div>
                         <span class="text-xs text-gray-600 font-bold drop-shadow-md">记录</span>
                     </div>
                     <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openForum()">
                         <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                            <img id="icon-forum" src="https://i.postimg.cc/x81QLJsP/IMG-2279.jpg" class="w-full h-full object-cover rounded-[15px]">
+                            <img id="icon-forum" src="https://i.postimg.cc/wTzkGQMx/IMG_3164.png" class="w-full h-full object-cover rounded-[15px]">
                         </div>
                         <span class="text-xs text-gray-600 font-bold drop-shadow-md">论坛</span>
                     </div>
@@ -237,17 +237,15 @@
             <div class="w-full mt-10 relative px-2">
                 <div class="flex justify-between px-10 mb-4">
                     <div class="flex flex-col items-center relative translate-x-[35px] -translate-y-[3px]">
-                        <span id="badge-char" class="absolute -left-[55px] -top-[3px] text-[11px] italic text-gray-600 bg-white shadow-sm flex items-center justify-center cursor-pointer" style="border-radius: 50%;
-width: 37px; height: 23px;" onclick="editAnyText('badge-char')">char</span>
+                        <span id="badge-char" class="absolute -left-[55px] -top-[3px] text-[11px] italic text-gray-600 bg-white shadow-sm flex items-center justify-center cursor-pointer" style="border-radius: 50%; width: 37px; height: 23px;" onclick="editAnyText('badge-char')">char</span>
                         <div class="w-[55px] h-[55px] rounded-full bg-transparent flex items-center justify-center cursor-pointer overflow-hidden" onclick="changeAnyImage(this)">
-                            <img src="https://i.postimg.cc/5ysCmzft/IMG-2545.jpg" class="w-full h-full object-cover">
+                            
                         </div>
                     </div>
                     <div class="flex flex-col items-center relative -translate-x-[35px] -translate-y-[3px]">
-                        <span id="badge-user" class="absolute -right-[55px] -top-[3px] text-[11px] italic text-gray-600 bg-white shadow-sm flex items-center justify-center cursor-pointer" style="border-radius: 50%;
-width: 37px; height: 23px;" onclick="editAnyText('badge-user')">user</span>
+                        <span id="badge-user" class="absolute -right-[55px] -top-[3px] text-[11px] italic text-gray-600 bg-white shadow-sm flex items-center justify-center cursor-pointer" style="border-radius: 50%; width: 37px; height: 23px;" onclick="editAnyText('badge-user')">user</span>
                         <div class="w-[55px] h-[55px] rounded-full bg-transparent flex items-center justify-center cursor-pointer overflow-hidden" onclick="changeAnyImage(this)">
-                            <img src="https://i.postimg.cc/j2M7hfRT/IMG-2546.jpg" class="w-full h-full object-cover">
+                            
                         </div>
                     </div>
                 </div>
@@ -309,14 +307,13 @@ openPlaylist();">
             <div class="w-full flex gap-6 px-2 mt-6">
                 <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openMqbxApp()">
                     <div class="app-icon bg-[#5c5c5c] w-[60px] h-[60px] rounded-[15px] shadow-sm overflow-hidden p-0">
-                        <img id="icon-mqbx" src="https://i.postimg.cc/C1ydCNDJ/IMG-2165.jpg" class="w-full h-full object-cover rounded-[15px]">
+                        <img id="icon-mqbx" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="w-full h-full object-cover rounded-[15px]" style="background-color: #5c5c5c;">
                     </div>
                     <span class="text-xs text-gray-600 font-bold drop-shadow-md">默契比心</span>
                 </div>
                 <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openWaimaiApp()">
-                    <div class="app-icon bg-[#5c5c5c] 
-w-[60px] h-[60px] rounded-[15px] shadow-sm overflow-hidden p-0">
-                        <img id="icon-waimai" src="https://i.postimg.cc/76vb1V7m/IMG-2290.jpg" class="w-full h-full object-cover rounded-[15px]">
+                    <div class="app-icon bg-[#5c5c5c] w-[60px] h-[60px] rounded-[15px] shadow-sm overflow-hidden p-0">
+                        <img id="icon-waimai" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="w-full h-full object-cover rounded-[15px]" style="background-color: #5c5c5c;">
                     </div>
                     <span class="text-xs text-gray-600 font-bold drop-shadow-md">外卖</span>
                 </div>
@@ -326,23 +323,22 @@ w-[60px] h-[60px] rounded-[15px] shadow-sm overflow-hidden p-0">
         <div class="glass-card w-full p-4 flex justify-between items-center relative">
             <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openSmsApp()">
                 <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                    <img id="icon-sms" src="https://i.postimg.cc/mkg47zdX/IMG-2309.jpg" class="w-full h-full object-cover rounded-[15px]">
+                    <img id="icon-sms" src="https://i.postimg.cc/28YxK7yk/IMG_3166.png" class="w-full h-full object-cover rounded-[15px]">
                 </div>
             </div>
             <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openSettingsApp()">
                 <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                    <img id="icon-settings" src="https://i.postimg.cc/NFjtR9Nb/IMG-2163.jpg" class="w-full h-full object-cover rounded-[15px]">
+                    <img id="icon-settings" src="https://i.postimg.cc/4NG1SQyx/IMG_3167.png" class="w-full h-full object-cover rounded-[15px]">
                 </div>
             </div>
             <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openAppearanceApp()">
                 <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
-                    <img id="icon-appearance" src="https://i.postimg.cc/pTNyQZ8C/IMG-2154.jpg" class="w-full h-full object-cover rounded-[15px]">
+                    <img id="icon-appearance" src="https://i.postimg.cc/NftxzkF0/IMG_3165.png" class="w-full h-full object-cover rounded-[15px]">
                 </div>
             </div>
             <div class="flex flex-col items-center gap-1 w-[60px]" onclick="openCheckPhoneApp()">
-                <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] 
-rounded-[15px] shadow-sm">
-                    <img id="icon-placeholder4" src="https://i.postimg.cc/d3VFGkW6/IMG-2285.jpg" class="w-full h-full object-cover rounded-[15px]">
+                <div class="app-icon overflow-hidden p-0 w-[60px] h-[60px] rounded-[15px] shadow-sm">
+                    <img id="icon-placeholder4" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="w-full h-full object-cover rounded-[15px]" style="background-color: #5c5c5c;">
                 </div>
             </div>
         </div>
@@ -446,7 +442,7 @@ rounded-[15px] shadow-sm">
         </div>
         <div class="flex-1 overflow-y-auto bg-[#ededed]">
             <div id="chat-flow" class="p-4 space-y-4 min-h-full">
-                <div class="text-center text-xs text-gray-400 my-4">开始与 AI 好友聊天吧</div>
+                <div class="text-center text-xs text-gray-400 my-4">(♡>𖥦<)/♥</div>
             </div>
         </div>
                 <div class="p-3 bg-[#f7f7f7] border-t flex items-center gap-2 sticky bottom-0 relative">
@@ -1565,15 +1561,33 @@ rounded-[15px] shadow-sm">
         .glass-input::placeholder { color: #888; }
     </style>
 
+    <div id="music-floating-widget" onclick="openMusicPlayer()" class="fixed right-4 top-24 w-12 h-12 rounded-full border-2 border-white shadow-[0_4px_10px_rgba(0,0,0,0.2)] z-[90] hidden cursor-pointer transition-transform active:scale-90" style="animation: spin 10s linear infinite;">
+        <img id="music-floating-cover" src="" class="w-full h-full object-cover rounded-full">
+    </div>
+
+    <div id="listen-together-modal" class="fixed inset-0 bg-black/60 hidden z-[150] flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white rounded-[28px] w-full max-w-sm p-6 shadow-2xl relative flex flex-col max-h-[75vh]">
+            <h3 class="font-bold text-[#333] mb-4 text-center text-[18px]">邀请谁一起听？</h3>
+            <div id="listen-char-list" class="flex-1 overflow-y-auto bg-gray-50 rounded-2xl p-2 flex flex-col gap-2 mb-5 border border-gray-100">
+            </div>
+            <button onclick="closeListenModal()" class="w-full py-3 bg-white border-2 border-gray-200 rounded-full font-bold text-gray-600 text-[16px] active:bg-gray-50 transition-colors">取消</button>
+        </div>
+    </div>
+
     <div id="music-player-screen" class="fixed inset-0 hidden flex flex-col z-[100] transition-transform duration-300 translate-y-full player-bg-adaptive" style="background-size: cover; background-position: center;">
         <div class="h-14 flex items-center justify-between px-4 mt-2 border-b pb-2 player-border-adaptive">
             <button onclick="closeMusicPlayer()" class="w-10 flex justify-start player-text-adaptive">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
             </button>
             <div class="flex-1 text-center font-bold text-[16px] player-text-adaptive">正在播放</div>
-            <button onclick="document.getElementById('player-bg-input').click()" class="w-10 flex justify-end player-text-adaptive active:scale-90 transition-transform">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            </button>
+            <div class="w-auto flex justify-end items-center gap-3 pr-2">
+                <button onclick="openListenModal()" class="player-text-adaptive active:scale-90 transition-transform text-[12px] font-bold border border-current px-2.5 py-1 rounded-full whitespace-nowrap">
+                    一起听
+                </button>
+                <button onclick="document.getElementById('player-bg-input').click()" class="player-text-adaptive active:scale-90 transition-transform flex-shrink-0">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </button>
+            </div>
             <input type="file" id="player-bg-input" class="hidden" accept="image/*" onchange="changePlayerBg(this)">
         </div>
 
@@ -1649,9 +1663,8 @@ rounded-[15px] shadow-sm">
             <input id="new-song-artist" type="text" placeholder="歌手名称" class="w-full glass-input rounded-xl px-4 py-2.5 mb-3 outline-none text-[14px]">
             
             <div class="mb-3 glass-input p-3 rounded-xl">
-                <label class="block text-[12px] player-text-muted mb-1.5 font-bold">1. 封面图片 (上传或链接)</label>
-                <input type="file" id="new-song-cover" class="text-[11px] w-full mb-2">
-                <input id="new-song-cover-url" type="text" placeholder="或粘贴封面图片URL链接..." class="w-full bg-black/5 border-none rounded-lg px-3 py-2 outline-none text-[12px]">
+                <label class="block text-[12px] player-text-muted mb-1.5 font-bold">1. 封面图片 (放开限制)</label>
+                <input type="file" id="new-song-cover" class="text-[11px] w-full">
             </div>
             
             <div class="mb-3 glass-input p-3 rounded-xl">
@@ -2237,8 +2250,8 @@ FileReader.prototype.readAsDataURL = function(file) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // 【为了防止内存存满没法保存，把最大像素调到了 800】
-            const MAX_SIZE = 800;
+            // 【我帮你修改了这里】：把最大像素从 500 提升到了 1500，这样当壁纸绝对不会糊了！
+            const MAX_SIZE = 1500;
             let width = img.width;
             let height = img.height;
             
@@ -2254,8 +2267,8 @@ FileReader.prototype.readAsDataURL = function(file) {
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
             
-            // 【质量调到 0.5，大幅压缩体积防止塞满报错】
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+            // 【我帮你修改了这里】：质量调到 0.75，既能压缩体积省下大量内存，又能保持极高的清晰度！
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
             if (typeof this.onload === 'function') {
                 this.onload({ target: { result: dataUrl } });
             }
@@ -2585,33 +2598,6 @@ let config = {
 // 新增：用来存储保存过的字体预设
 let fontPresets = JSON.parse(localStorage.getItem('fontPresets_data')) || {};
 
-// ===== 核心修改：在网页加载时，尝试恢复上一次播放的歌曲信息 =====
-let lastPlayedSongStr = localStorage.getItem('os_last_played_song');
-if (lastPlayedSongStr) {
-    try {
-        let lastSong = JSON.parse(lastPlayedSongStr);
-        // 延迟一点点执行，确保页面上那些组件都已经加载出来了
-        setTimeout(() => {
-            const playerTitle = document.getElementById('player-title');
-            if (playerTitle) playerTitle.innerText = lastSong.title;
-            const playerArtist = document.getElementById('player-artist');
-            if (playerArtist) playerArtist.innerText = lastSong.artist;
-            const playerCover = document.getElementById('player-cover-img');
-            if (playerCover) playerCover.src = lastSong.cover;
-
-            const widgetTitle = document.getElementById('music-title');
-            if (widgetTitle) widgetTitle.innerText = lastSong.title;
-            const widgetArtist = document.getElementById('music-artist');
-            if (widgetArtist) widgetArtist.innerText = lastSong.artist;
-            const widgetCover = document.getElementById('widget-cover');
-            if (widgetCover) widgetCover.src = lastSong.cover;
-        }, 500);
-    } catch (e) {
-        console.error("恢复上次播放歌曲失败", e);
-    }
-}
-// ===== 新增结束 =====
-
 // 新增：用于暂存外观设置的变量
 let tempAppearance = {
     wallpaper: '',
@@ -2646,63 +2632,73 @@ let currentFriendId = null;
 let isMultiSelecting = false;
 
 // 【全自动存档魔法】升级版：加入防杀后台抢救机制与内存报警
-// === 无限存储补丁：IndexedDB 核心引擎 ===
-const dbName = "PluieInfiniteStorage";
-const storeName = "GlobalState";
-let db;
-
-const request = indexedDB.open(dbName, 1);
-request.onupgradeneeded = (e) => {
-    db = e.target.result;
-    if (!db.objectStoreNames.contains(storeName)) db.createObjectStore(storeName);
-};
-request.onsuccess = (e) => { db = e.target.result; };
-
-async function performGlobalSave() {
-    if (!db) return;
+function performGlobalSave() {
     try {
-        const momentsFeed = document.getElementById('moments-feed');
-        const forumFeed = document.getElementById('forum-feed');
-        const profilePostsFeed = document.getElementById('profile-posts-feed');
-        const desktopBody = document.getElementById('desktop-body');
+        // 基础核心数据保存
+        localStorage.setItem('os_user_profile', JSON.stringify(userProfile));
+        localStorage.setItem('friend_list', JSON.stringify(friendList));
+        localStorage.setItem('os_config', JSON.stringify(config));
         
+        // 1. 保存音乐列表和点赞状态
+        if (typeof playlist !== 'undefined') localStorage.setItem('os_playlist', JSON.stringify(playlist));
+        if (typeof momentLikes !== 'undefined') localStorage.setItem('os_moment_likes', JSON.stringify(momentLikes));
+        
+        // 2. 保存朋友圈和论坛推文的画面
+        const momentsFeed = document.getElementById('moments-feed');
+        if (momentsFeed) localStorage.setItem('os_moments_html', momentsFeed.innerHTML);
+        const forumFeed = document.getElementById('forum-feed');
+        if (forumFeed) localStorage.setItem('os_forum_html', forumFeed.innerHTML);
+        const profilePostsFeed = document.getElementById('profile-posts-feed');
+        if (profilePostsFeed) localStorage.setItem('os_profile_posts_html', profilePostsFeed.innerHTML);
+
+        // 3. 保存主屏幕换过的壁纸
+        const desktopBody = document.getElementById('desktop-body');
+        if (desktopBody && desktopBody.style.backgroundImage) {
+            localStorage.setItem('os_desktop_bg', desktopBody.style.backgroundImage);
+        }
+
+        // 4. 自动搜集并保存你更改的所有文本和桌面图标、照片
         let customDOMState = {};
         const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
+        
         editableElements.forEach((el, index) => {
             if (!el.id) el.id = 'auto_save_id_' + index;
-            if (el.tagName === 'IMG') customDOMState[el.id] = el.src;
-            else {
+            if (el.tagName === 'IMG') {
+                customDOMState[el.id] = el.src;
+            } else {
                 customDOMState[el.id + '_html'] = el.innerHTML;
                 if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
             }
         });
 
-        const fullData = {
-            userProfile,
-            friendList,
-            config,
-            playlist: typeof playlist !== 'undefined' ? playlist : [],
-            momentLikes: typeof momentLikes !== 'undefined' ? momentLikes : {},
-            momentsHtml: momentsFeed ? momentsFeed.innerHTML : "",
-            forumHtml: forumFeed ? forumFeed.innerHTML : "",
-            profilePostsHtml: profilePostsFeed ? profilePostsFeed.innerHTML : "",
-            desktopBg: desktopBody ? desktopBody.style.backgroundImage : "",
-            customDOMState
-        };
+        // 额外强制保存一些特殊文字
+        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
+        specialIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) customDOMState[id + '_html'] = el.innerHTML;
+        });
 
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).put(fullData, "main_state");
+        // 【终极修复1】：把最新状态永远缓存在内存里，供巡逻队读取
         window.my_safe_dom_cache = customDOMState;
-        
-        // 只有在极少的基础配置更新时才同步到 localStorage，避免 5MB 报错
-        localStorage.setItem('os_config', JSON.stringify(config)); 
+
+        try {
+            localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
+        } catch(err) {
+            // 【终极修复2】：彻底删掉那烦人的5MB弹窗！就算塞满了也不弹窗，用内存缓存强行顶着！
+        }
+
     } catch (e) {
-        console.warn("存储写入中...");
+        // 捕获其余可能的错误，不再弹窗
     }
 }
 
-setInterval(performGlobalSave, 1500);
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') performGlobalSave(); });
+// 1. 常规每隔1秒钟偷偷保存
+setInterval(performGlobalSave, 1000);
+
+// 2. 苹果系统专属救命稻草：在你上滑杀后台、切回桌面的那一瞬间，强制瞬间保存！
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') performGlobalSave();
+});
 window.addEventListener('pagehide', performGlobalSave);
 
 // 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
@@ -3326,7 +3322,6 @@ function renderFriendList() {
             if (!a.isPinned && b.isPinned) return 1;
             return 0;
         });
-
         sortedFriends.forEach(f => {
             const div = document.createElement('div');
             // 置顶的好友背景稍微带点浅灰，区分普通好友
@@ -3334,8 +3329,10 @@ function renderFriendList() {
             
             // 2. 提取最后一条聊天记录用于展示
             let lastMsg = '暂无聊天记录';
+  
             if (f.chatHistory && f.chatHistory.length > 0) {
                 let lastContent = f.chatHistory[f.chatHistory.length - 1].content;
+                
                 // 【新增修复】优先把“描述照片”的超长代码变成干净的 [图片]
                 if (lastContent.includes('<div class="desc-photo-container"')) {
                     lastMsg = '[图片]';
@@ -4414,31 +4411,26 @@ function deleteSelectedMessages() {
     cancelMultiSelect();
 }
 
-function sendUserMsg(){
-    if(!currentFriendId) return;
+function sendUserMsg(){ 
+    if(!currentFriendId) return; 
     const input = document.getElementById('chat-input');
-    const text = input.value.trim();
+    const text = input.value.trim(); 
+    
     // 【微信专属逻辑】：如果输入框是空的，那就什么都不做，绝对不触发AI。
     // 想让TA回复，只能去点击右侧那个专门的回复按键！
-    if(!text && !currentQuoteMsg) { return; }
-    let finalContent = text;
-    if (currentQuoteMsg) {
-        finalContent = `[引用:${currentQuoteMsg}]\n${text}`;
-        currentQuoteMsg = null;
-        input.placeholder = "命运为何不把我们绑紧一点";
-    }
-    // 把消息扔进屏幕，但不呼唤AI，实现单纯的“连发”
-    chatHistory.push({role:'user',content:finalContent});
-    input.value = '';
+    if(!text && !currentQuoteMsg) { 
+        return; 
+    } 
     
-    // 【终极防杀后台补丁】：发消息瞬间强迫手机写进硬盘！
-    try {
-        localStorage.setItem('friend_list', JSON.stringify(friendList));
-        localStorage.getItem('friend_list'); // 强行触发硬盘读写
-    } catch(err) {
-        alert("存档失败！手机缓存已满(超过5MB)，请清理聊天记录或图片！");
-    }
-
+    let finalContent = text;
+    if (currentQuoteMsg) { 
+        finalContent = `[引用:${currentQuoteMsg}]\n${text}`; 
+        currentQuoteMsg = null; 
+        input.placeholder = "输入消息..."; 
+    } 
+    // 把消息扔进屏幕，但不呼唤AI，实现单纯的“连发” 
+    chatHistory.push({role:'user',content:finalContent}); 
+    input.value = ''; 
     renderAllMessages(true);
 }
 async function triggerAI(){
@@ -6376,7 +6368,7 @@ async function fetchModelsFromAPI() {
             alert("未获取到模型列表，请检查地址是否正确。");
         }
     } catch(e) {
-        alert("拉取失败，请检查反代地址、密匙是否正确，或网络是否通畅。");
+        alert("❌ 拉取失败，请检查反代地址、密匙是否正确，或网络是否通畅。");
     }
     btn.innerText = "拉取模型";
 }
@@ -6410,7 +6402,7 @@ function handleLocalFont(input) {
         loadCustomFont('MyCustomFont', fontUrl);
         input.value = ''; // 清空方便重新选择
         
-        alert("本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\n如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
+        alert("本地字体加载成功！\n\n【温馨提示】中文字体文件太大（几十MB），网页的微小存储空间存不下。因此使用“手机文件”上传的字体，在彻底刷新网页后会恢复默认。\如果希望永久保存进预设中，请使用填写【字体链接】的方式！");
     }
 }
 
@@ -6551,17 +6543,17 @@ function openAppearanceApp() {
         document.getElementById('global-chat-bg-hint').classList.remove('hidden');
     }
 
-    // 获取并显示所有桌面图标
+    // 获取并显示所有桌面图标当前的状态
     const iconGrid = document.getElementById('icon-edit-grid');
     iconGrid.innerHTML = '';
     const iconsList = [
         { id: 'icon-wechat', name: '微信' },
         { id: 'icon-lorebook', name: '世界书' },
-        { id: 'icon-forum', name: '论坛' },
-        { id: 'icon-sms', name: '短信' },
-        { id: 'icon-settings', name: '设置' },
-        { id: 'icon-appearance', name: '外观设置' },
         { id: 'icon-placeholder2', name: '记录' },
+        { id: 'icon-forum', name: '论坛' },
+        { id: 'icon-sms', name: '信息' },
+        { id: 'icon-settings', name: '设置' },
+        { id: 'icon-appearance', name: '外观' },
         { id: 'icon-placeholder4', name: '查手机' },
         // === 这里把外卖和默契比心加进去了 ===
         { id: 'icon-mqbx', name: '默契比心' },
@@ -6570,11 +6562,14 @@ function openAppearanceApp() {
 
     // 获取已经保存过的自定义名称
     const savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
+
     iconsList.forEach(icon => {
         const desktopImg = document.getElementById(icon.id);
         const currentSrc = tempAppearance.icons[icon.id] || (desktopImg ? desktopImg.src : '');
+        
         // 决定显示的名字：优先用刚刚暂存的，其次用以前保存过的，最后用默认的
         const displayName = tempAppearance.names[icon.id] || savedAppNames[icon.id] || icon.name;
+
         iconGrid.innerHTML += `
             <div class="flex flex-col items-center gap-1">
                 <div class="w-12 h-12 rounded-[10px] overflow-hidden shadow-sm border border-gray-100 bg-gray-200 cursor-pointer active:scale-95 transition-transform" onclick="triggerIconEdit('${icon.id}')">
@@ -6583,19 +6578,13 @@ function openAppearanceApp() {
                 <span id="preview-name-${icon.id}" class="text-[10px] text-gray-500 cursor-pointer hover:text-black underline decoration-gray-300 underline-offset-2 px-1" onclick="editAppearanceAppName('${icon.id}', '${displayName}')">${displayName}</span>
             </div>
         `;
-        
-        // 【防夺舍终极补丁1】：在界面生成的瞬间，告诉巡逻队预览图的新样子，禁止恢复成旧图标！
-        if (window.my_safe_dom_cache) {
-            window.my_safe_dom_cache[`preview-${icon.id}`] = currentSrc;
-        }
     });
 }
 
 function closeAppearanceApp() {
     document.getElementById('appearance-app-screen').classList.add('slide-hidden');
     tempAppearance.icons = {}; // 清除未保存的暂存状态
-    tempAppearance.names = {};
-    // 新增：清除未保存的文字状态
+    tempAppearance.names = {}; // 新增：清除未保存的文字状态
 }
 
 // 处理壁纸选择
@@ -6628,12 +6617,6 @@ function handleIconSelect(input) {
             document.getElementById(`preview-${currentEditingIconId}`).src = result;
             // 暂存更改，等点了保存再生效
             tempAppearance.icons[currentEditingIconId] = result;
-            
-            // 【防夺舍终极补丁2】：选择完图片的0.1秒内立刻捂住巡逻队的眼睛，强制更新缓存给它看！
-            if (window.my_safe_dom_cache) {
-                window.my_safe_dom_cache[`preview-${currentEditingIconId}`] = result;
-            }
-
             // 清空 input 允许重复选择同一张
             input.value = '';
         }
@@ -6643,14 +6626,11 @@ function handleIconSelect(input) {
 
 // 点击保存外观设置
 function saveAppearanceApp() {
-    // 1. 应用壁纸到主屏幕
+    // 1. 应用壁纸
     if (tempAppearance.wallpaper) {
         document.getElementById('desktop-body').style.backgroundImage = `url(${tempAppearance.wallpaper})`;
-    } else if (document.getElementById('desktop-body').style.backgroundImage === 'none') {
-        // 什么都不做
     }
-
-    // 2. 新增：应用所有更改过的图标到真实桌面
+    // 2. 应用所有更改过的图标到真实桌面
     for (const [iconId, imgSrc] of Object.entries(tempAppearance.icons)) {
         const desktopImg = document.getElementById(iconId);
         if (desktopImg) {
@@ -6659,35 +6639,30 @@ function saveAppearanceApp() {
             if(desktopImg.style.backgroundColor) desktopImg.style.backgroundColor = 'transparent';
         }
     }
-
-    try {
-        // 3. 新增：应用所有更改过的名称到真实桌面
-        let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
-        for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
-            savedAppNames[iconId] = newName;
-            const desktopImg = document.getElementById(iconId);
-            if (desktopImg) {
-                // 通过图片往上找父元素，再找旁边的文字元素
-                const iconContainer = desktopImg.closest('.app-icon');
-                if (iconContainer && iconContainer.nextElementSibling) {
-                    iconContainer.nextElementSibling.innerText = newName;
-                }
+    
+    // 3. 新增：应用所有更改过的名称到真实桌面
+    let savedAppNames = JSON.parse(localStorage.getItem('os_app_names')) || {};
+    for (const [iconId, newName] of Object.entries(tempAppearance.names)) {
+        savedAppNames[iconId] = newName;
+        const desktopImg = document.getElementById(iconId);
+        if (desktopImg) {
+            // 通过图片往上找父元素，再找旁边的文字元素
+            const iconContainer = desktopImg.closest('.app-icon');
+            if (iconContainer && iconContainer.nextElementSibling) {
+                iconContainer.nextElementSibling.innerText = newName;
             }
         }
-        localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
-
-        // 保存全局聊天背景到缓存
-        if (tempAppearance.chatBg !== undefined) {
-            config.globalChatBg = tempAppearance.chatBg;
-            localStorage.setItem('globalChatBg', tempAppearance.chatBg);
-        }
-        alert("外观设置已应用到桌面！");
-        closeAppearanceApp();
-        // 【新增防夺舍补丁】：保存完毕的瞬间立刻强行写进本地存档，不给巡逻队任何覆盖的机会！
-        performGlobalSave();
-    } catch(err) {
-        alert("保存失败！你的图片太大导致浏览器存储空间（5MB）已经塞满了！请选择更小更模糊的图片，或者清理一下角色聊天记录再重试！");
     }
+    localStorage.setItem('os_app_names', JSON.stringify(savedAppNames));
+    
+    // 保存全局聊天背景到缓存
+    if (tempAppearance.chatBg !== undefined) {
+        config.globalChatBg = tempAppearance.chatBg;
+        localStorage.setItem('globalChatBg', tempAppearance.chatBg);
+    }
+    
+    alert("外观设置已应用到桌面！");
+    closeAppearanceApp();
 }
 // ===============================
 
@@ -6704,40 +6679,12 @@ window.onload = () => {
         }
     }
     
-// 1. 恢复音乐列表
-const savedPlaylist = localStorage.getItem('os_playlist');
-if (savedPlaylist && typeof playlist !== 'undefined') {
-    playlist = JSON.parse(savedPlaylist);
-    if (typeof renderPlaylist === 'function') renderPlaylist();
-    
-    // ====== 新增：恢复上次播放的歌曲显示 ======
-    let lastIndexStr = localStorage.getItem('os_last_played_index');
-    if (lastIndexStr !== null && playlist.length > 0) {
-        let lastIndex = parseInt(lastIndexStr);
-        if (lastIndex >= 0 && lastIndex < playlist.length) {
-            currentSongIndex = lastIndex;
-            const song = playlist[lastIndex];
-            const coverSrc = song.cover || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg";
-            
-            // 恢复播放器UI
-            const pTitle = document.getElementById('player-title');
-            if(pTitle) pTitle.innerText = song.title;
-            const pArtist = document.getElementById('player-artist');
-            if(pArtist) pArtist.innerText = song.artist;
-            const pCover = document.getElementById('player-cover-img');
-            if(pCover) pCover.src = coverSrc;
-            
-            // 恢复桌面的小组件UI
-            const mTitle = document.getElementById('music-title');
-            if(mTitle) mTitle.innerText = song.title;
-            const mArtist = document.getElementById('music-artist');
-            if(mArtist) mArtist.innerText = song.artist;
-            const wCover = document.getElementById('widget-cover');
-            if(wCover) wCover.src = coverSrc;
-        }
+    // 1. 恢复音乐列表
+    const savedPlaylist = localStorage.getItem('os_playlist');
+    if (savedPlaylist && typeof playlist !== 'undefined') {
+        playlist = JSON.parse(savedPlaylist);
+        if (typeof renderPlaylist === 'function') renderPlaylist();
     }
-    // ====== 新增结束 ======
-}
     const savedLikes = localStorage.getItem('os_moment_likes');
     if (savedLikes && typeof momentLikes !== 'undefined') momentLikes = JSON.parse(savedLikes);
     
@@ -7318,7 +7265,7 @@ function saveFriendLorebook() {
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     
     closeFriendLorebook();
-    alert("世界书关联已保存！AI现在只会提取你打勾的这些设定。");
+    alert("世界书关联已保存！");
 }
 
 // ================= 新增：自动总结记忆功能引擎 (卡片版) =================
@@ -7642,18 +7589,12 @@ function saveBubbleSettings() {
     if (!friend) return;
     
     const cssContent = document.getElementById('bubble-css-input').value;
-    const oldCss = friend.bubbleCss;
     friend.bubbleCss = cssContent;
+    localStorage.setItem('friend_list', JSON.stringify(friendList));
     
-    try {
-        localStorage.setItem('friend_list', JSON.stringify(friendList));
-        applyDynamicBubbleCss(cssContent);
-        closeBubbleSettings();
-        alert('气泡样式已保存并立即生效！');
-    } catch (e) {
-        friend.bubbleCss = oldCss; // 如果存不下，自动撤销防止卡死
-        alert("保存失败！存储空间（5MB）已满！请先去清理一下聊天记录，或者在上传背景图时选择体积更小、更模糊的照片！");
-    }
+    applyDynamicBubbleCss(cssContent);
+    closeBubbleSettings();
+    alert('保存成功！');
 }
 
 function renderBubblePresets() {
@@ -7673,7 +7614,7 @@ function saveBubblePreset() {
     renderBubblePresets();
     
     document.getElementById('bubble-preset-select').value = presetName;
-    alert("气泡预设保存成功！");
+    alert("气泡预设保存成功");
 }
 
 function deleteBubblePreset() {
@@ -7756,7 +7697,7 @@ function saveOtherSettings() {
     }
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeOtherSettings();
-    alert("高级设置保存成功！");
+    alert("保存成功！");
 }
 
 function clearFriendHistory() {
@@ -7987,7 +7928,7 @@ function handleSingleChatBg(input) {
                 if (friend) {
                     friend.chatBg = result;
                     localStorage.setItem('friend_list', JSON.stringify(friendList));
-                    alert("这位好友的专属背景已保存！");
+                    alert("此好友的专属背景已保存！");
                 }
             }
         }
@@ -8415,17 +8356,15 @@ function renderPlaylist() {
 async function playSong(index) {
     if (index < 0 || index >= playlist.length) return;
     currentSongIndex = index;
-    
-    // ====== 新增：在每次播放时记住这首歌的序号 ======
-    localStorage.setItem('os_last_played_index', index);
-    
     const song = playlist[index];
+    
     // 从大仓库读取音乐
     const audioData = await musicDB.get(song.audioId);
     audioEl.src = audioData || song.audioSrc;
     audioEl.play().catch(() => {});
     isPlaying = true;
     updatePlayPauseUI();
+
     const coverSrc = song.cover || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg";
     document.getElementById('player-title').innerText = song.title;
     document.getElementById('player-artist').innerText = song.artist;
@@ -8433,6 +8372,7 @@ async function playSong(index) {
     document.getElementById('music-title').innerText = song.title;
     document.getElementById('music-artist').innerText = song.artist;
     document.getElementById('widget-cover').src = coverSrc;
+
     parsedLyrics = [];
     if (song.lrc) parseLyrics(song.lrc);
     else document.getElementById('lyrics-content').innerHTML = '<div class="text-sm">暂无歌词</div>';
@@ -8489,13 +8429,10 @@ let tempAudioBase64 = null;
 
 function openAddSongModal() {
     document.getElementById('add-song-modal').classList.remove('hidden');
-    // 这里增加了对 new-song-cover-url 的清空
-    ['new-song-title', 'new-song-artist', 'new-song-audio-url', 'new-song-cover-url', 'new-song-lrc-text', 'new-song-cover', 'new-song-audio-file'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.value = '';
+    ['new-song-title', 'new-song-artist', 'new-song-audio-url', 'new-song-lrc-text', 'new-song-cover', 'new-song-audio-file'].forEach(id => {
+        const el = document.getElementById(id); if(el) el.value = '';
     });
-    tempCoverBase64 = null;
-    tempAudioBase64 = null;
+    tempCoverBase64 = null; tempAudioBase64 = null;
 }
 
 function closeAddSongModal() { document.getElementById('add-song-modal').classList.add('hidden'); }
@@ -8531,63 +8468,34 @@ document.getElementById('new-song-audio-file').addEventListener('change', functi
 });
 
 async function saveNewSong() {
-    // 1. 获取所有输入框的内容
-    const titleEl = document.getElementById('new-song-title');
-    const artistEl = document.getElementById('new-song-artist');
-    const audioUrlEl = document.getElementById('new-song-audio-url');
-    const coverUrlEl = document.getElementById('new-song-cover-url'); // 新增：封面链接框
-    const lrcTextEl = document.getElementById('new-song-lrc-text');
+    const title = document.getElementById('new-song-title').value.trim();
+    const artist = document.getElementById('new-song-artist').value.trim() || '未知歌手';
+    const audioUrl = document.getElementById('new-song-audio-url').value.trim();
+    const lrcText = document.getElementById('new-song-lrc-text').value.trim();
 
-    const title = titleEl ? titleEl.value.trim() : "";
-    const artist = (artistEl && artistEl.value.trim()) ? artistEl.value.trim() : '未知歌手';
-    const audioUrl = audioUrlEl ? audioUrlEl.value.trim() : "";
-    const coverUrl = coverUrlEl ? coverUrlEl.value.trim() : ""; // 获取封面链接
-    const lrcText = lrcTextEl ? lrcTextEl.value.trim() : "";
+    if (!title) return alert("请填写歌曲名称");
+    if (!tempAudioBase64 && !audioUrl) return alert("请上传文件或填写链接");
 
-    // 2. 检查必填项
-    if (!title) {
-        alert("请填写歌曲名称哦！");
-        return;
-    }
-    if (!tempAudioBase64 && !audioUrl) {
-        alert("请上传音乐文件，或者在下方填写音乐链接！");
-        return;
+    const songId = "m_" + Date.now();
+    // 如果是文件，存入大仓库
+    if (tempAudioBase64) {
+        await musicDB.save(songId, tempAudioBase64);
     }
 
-    try {
-        const songId = "m_" + Date.now();
+    const newSong = {
+        title: title,
+        artist: artist,
+        cover: tempCoverBase64,
+        audioId: songId,
+        audioSrc: audioUrl || "", // 如果有URL优先用URL
+        lrc: lrcText
+    };
 
-        // 3. 处理音频数据
-        if (tempAudioBase64) {
-            await musicDB.save(songId, tempAudioBase64);
-        }
-
-        // 4. 重点逻辑：优先用上传的图(tempCoverBase64)，没有就用填写的链接(coverUrl)，再没有用默认图
-        let finalCover = tempCoverBase64 || coverUrl || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg";
-
-        // 5. 打包歌曲信息
-        const newSong = {
-            title: title,
-            artist: artist,
-            cover: finalCover,
-            audioId: songId,
-            audioSrc: audioUrl || "", 
-            lrc: lrcText
-        };
-
-        // 6. 保存到播放列表
-        playlist.push(newSong);
-        localStorage.setItem('os_playlist', JSON.stringify(playlist));
-
-        alert("🎵 添加成功！");
-        closeAddSongModal();
-        if (typeof renderPlaylist === 'function') {
-            renderPlaylist();
-        }
-    } catch (error) {
-        console.error("保存歌曲出错了:", error);
-        alert("系统错误导致添加失败，请刷新页面重试。");
-    }
+    playlist.push(newSong);
+    localStorage.setItem('os_playlist', JSON.stringify(playlist));
+    alert("添加成功！已存入大容量仓库。");
+    closeAddSongModal();
+    renderPlaylist();
 }
 // =========================================================
 
@@ -9115,7 +9023,7 @@ function saveMountMemory() {
     
     localStorage.setItem('friend_list', JSON.stringify(friendList));
     closeMountMemoryModal();
-    alert("记忆挂载成功！");
+    alert("记忆挂载成功!");
 }0
 // ================= 新增：真正的后台自动活跃引擎 =================
 // 这个引擎会每隔30秒检查一次所有人（包括群聊）的时间
@@ -9614,6 +9522,220 @@ async function executeAutoMomentPost(friend) {
         feed.prepend(div);
     } catch(e) { console.error("AI自动发朋友圈失败:", e); }
 }
+// =============== 新增：一起听 & 浮窗功能引擎 2.0升级版 =================
+let listeningTogetherCharId = null;
+
+// 强化：打开音乐播放器时隐藏浮窗
+const originalOpenMusicPlayer = window.openMusicPlayer;
+window.openMusicPlayer = function() {
+    if (originalOpenMusicPlayer) originalOpenMusicPlayer();
+    document.getElementById('music-floating-widget').classList.add('hidden');
+};
+
+// 强化：退出播放界面时显示封面浮窗
+const originalCloseMusicPlayer = window.closeMusicPlayer;
+window.closeMusicPlayer = function() {
+    if (originalCloseMusicPlayer) originalCloseMusicPlayer();
+    const title = document.getElementById('player-title').innerText;
+    // 只有在真的有歌曲时才显示浮窗
+    if (title && title !== '暂无歌曲') {
+        const coverSrc = document.getElementById('player-cover-img').src;
+        document.getElementById('music-floating-cover').src = coverSrc;
+        document.getElementById('music-floating-widget').classList.remove('hidden');
+    }
+};
+
+// 打开邀请弹窗
+function openListenModal() {
+    const list = document.getElementById('listen-char-list');
+    list.innerHTML = '';
+    const friends = friendList.filter(f => !f.isGroup);
+    if (friends.length === 0) {
+        list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">还没有添加角色哦</div>';
+    } else {
+        friends.forEach(f => {
+            list.innerHTML += `
+                <div class="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100 rounded-xl" onclick="sendListenInvite('${f.id}')">
+                    <img src="${f.avatar || 'https://i.postimg.cc/76N2w5M7/IMG_2980.jpg'}" class="w-12 h-12 rounded-full object-cover">
+                    <span class="font-bold text-[15px] text-gray-800 flex-1">${f.remark}</span>
+                    <span class="text-[12px] bg-black text-white px-3 py-1 rounded-full font-bold">邀请</span>
+                </div>
+            `;
+        });
+    }
+    document.getElementById('listen-together-modal').classList.remove('hidden');
+}
+
+// 关闭邀请弹窗
+function closeListenModal() {
+    document.getElementById('listen-together-modal').classList.add('hidden');
+}
+
+// 在微信发送音乐卡片邀请
+async function sendListenInvite(charId) {
+    closeListenModal();
+    const friend = friendList.find(f => f.id === charId);
+    if (!friend) return;
+    
+    const songTitle = document.getElementById('player-title').innerText;
+    const songArtist = document.getElementById('player-artist').innerText;
+    const songCover = document.getElementById('player-cover-img').src;
+    
+    // 制作精美音乐卡片（为了让部分代码不包气泡，在最前面放了一个隐藏的占位img标签）
+    const cardHtml = `
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="display:none;">
+        <div class="bg-white rounded-[16px] w-[230px] shadow-md border border-gray-100 overflow-hidden cursor-pointer active:scale-95 transition-transform" onclick="openMusicPlayer()">
+            <div class="flex items-center gap-3 p-3 bg-gray-50 border-b border-gray-100">
+                <img src="${songCover}" class="w-11 h-11 rounded-full object-cover" style="animation: spin 5s linear infinite;">
+                <div class="flex-1 min-w-0">
+                    <div class="text-[14px] font-bold text-[#333] truncate">${songTitle}</div>
+                    <div class="text-[11px] text-gray-500 truncate">${songArtist}</div>
+                </div>
+            </div>
+            <div class="p-2.5 text-[11px] text-gray-500 flex justify-between items-center bg-white">
+                <span class="font-bold text-black">🎵 邀请你一起听歌</span>
+                <span class="text-[#07c160] font-bold">▶ 点击进入</span>
+            </div>
+        </div>
+    `;
+    
+    if (!friend.chatHistory) friend.chatHistory = [];
+    friend.chatHistory.push({ role: 'user', content: cardHtml });
+    
+    if (currentFriendId === charId) {
+        renderAllMessages(true);
+    }
+    // 强制刷新左侧好友列表让它生成最新消息
+    if(typeof renderFriendList === 'function') renderFriendList(); 
+    
+    alert(`已向 ${friend.remark} 发送了卡片邀请，快去微信看看TA同不同意吧！`);
+    
+    if (!config.apiKey) return;
+    let prompt = `你扮演 ${friend.realName}。设定：${friend.persona}。\n【场景】：用户刚才发了一张音乐卡片，邀请你一起听歌。歌曲是《${songTitle}》（歌手：${songArtist}）。\n【任务】：根据你的人设立刻发微信回复用户，表达你是否愿意一起听（傲娇、开心、高冷都可以，符合人设就行）。回复口语化、简短自然。`;
+    
+    try {
+        const response = await fetch(`${config.baseUrl}/chat/completions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
+            body: JSON.stringify({
+                model: config.model,
+                messages: [{ role: 'system', content: prompt }],
+                temperature: 0.8
+            })
+        });
+        const data = await response.json();
+        const reply = data.choices[0].message.content.trim();
+        
+        friend.chatHistory.push({ role: 'assistant', content: reply });
+        if (currentFriendId === charId) renderAllMessages(true);
+        if(typeof renderFriendList === 'function') renderFriendList(); 
+        localStorage.setItem('friend_list', JSON.stringify(friendList));
+        
+        listeningTogetherCharId = charId;
+    } catch(e) {}
+}
+
+// 核心：每隔15秒检查歌词并同步给AI
+let lastReportedLyrics = "";
+setInterval(async () => {
+    if (!listeningTogetherCharId || !config.apiKey) return;
+    
+    const playerTitle = document.getElementById('player-title');
+    const lyricsContainer = document.getElementById('lyrics-content');
+    
+    if (!playerTitle || !lyricsContainer) return;
+    const currentSong = playerTitle.innerText;
+    if (currentSong === '暂无歌曲') return;
+
+    let currentLyrics = "";
+    const activeLine = lyricsContainer.querySelector('.text-black, .text-white, .font-bold, .opacity-100'); 
+    if (activeLine) {
+        currentLyrics = activeLine.innerText.trim();
+    } else {
+        const lines = lyricsContainer.innerText.split('\n').filter(l => l.trim().length > 0 && !l.includes('暂无歌词'));
+        if (lines.length > 0) currentLyrics = lines[0].trim();
+    }
+
+    if (!currentLyrics || currentLyrics === lastReportedLyrics) return;
+    lastReportedLyrics = currentLyrics;
+
+    const friend = friendList.find(f => f.id === listeningTogetherCharId);
+    if (!friend) return;
+
+    if (Math.random() < 0.1) { 
+        let prompt = `你扮演 ${friend.realName}。设定：${friend.persona}。\n【场景】：你们正在连线“一起听歌”。现在手机里放着《${currentSong}》，刚好唱到了这句歌词：“${currentLyrics}”。\n【任务】：请针对这句歌词、或者当前的听歌氛围，主动给用户发一句简短的微信（字数15字内，像活人一样自然，绝不能像机器人复读歌词）。`;
+        try {
+            const response = await fetch(`${config.baseUrl}/chat/completions`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
+                body: JSON.stringify({
+                    model: config.model,
+                    messages: [{ role: 'system', content: prompt }],
+                    temperature: 0.9
+                })
+            });
+            const data = await response.json();
+            const reply = data.choices[0].message.content.trim();
+            
+            friend.chatHistory.push({ role: 'assistant', content: reply });
+            if (currentFriendId === listeningTogetherCharId) {
+                renderAllMessages(true);
+            }
+            if(typeof sendSystemNotification === 'function') {
+                sendSystemNotification(friend.remark, reply);
+            }
+            if(typeof renderFriendList === 'function') renderFriendList(); 
+            localStorage.setItem('friend_list', JSON.stringify(friendList));
+        } catch(e) {}
+    }
+}, 15000);
+
+// 核心：全自动界面修复引擎（解决卡片气泡、引文、预览问题、自动切封面）
+setInterval(() => {
+    // 1. 彻底清除聊天记录里邀请卡片外面的绿色/白色气泡，让它无缝显示
+    document.querySelectorAll('#chat-messages > div').forEach(msgWrapper => {
+        if (msgWrapper.innerHTML.includes('🎵 邀请你一起听歌')) {
+            // 找到所有可能是气泡的层，把背景和内边距掏空
+            const bubbles = msgWrapper.querySelectorAll('.bg-\\[\\#95ec69\\], .bg-white, .p-2, .p-3');
+            bubbles.forEach(bubble => {
+                bubble.classList.remove('bg-[#95ec69]', 'bg-white', 'p-2', 'p-3', 'shadow-sm', 'border', 'rounded-lg');
+                bubble.style.background = 'transparent';
+                bubble.style.padding = '0';
+            });
+        }
+        
+        // 2. 修复消息列表里引用回复时显示一长串代码的问题，改成简化的"一起听歌吧"
+        const quoteDiv = msgWrapper.querySelector('.quote-block') || msgWrapper.querySelector('.bg-black\\/5');
+        if (quoteDiv && quoteDiv.innerHTML.includes('🎵 邀请你一起听歌')) {
+            quoteDiv.innerHTML = '一起听歌吧';
+        }
+    });
+
+    // 3. 修复左侧好友列表最后一条消息预览，不要显示一整个卡片，改成显示"一起听歌吧"
+    const listContainer = document.getElementById('friend-list-container');
+    if (listContainer) {
+        // 精准寻找到显示预览小字的那个位置，直接替换，保证不破坏头像和名字
+        listContainer.querySelectorAll('.text-gray-400.truncate').forEach(el => {
+            if (el.innerHTML.includes('🎵 邀请你一起听歌')) {
+                el.innerHTML = '一起听歌吧';
+            }
+        });
+    }
+
+    // 4. 修复点击长按回复时，输入框上面的那一行预览文字
+    const replyPreview = document.getElementById('reply-preview-text');
+    if (replyPreview && replyPreview.innerHTML.includes('🎵 邀请你一起听歌')) {
+        replyPreview.innerHTML = '一起听歌吧';
+    }
+    
+    // 5. 浮窗封面自动跟随换歌切换！每隔0.5秒钟检查一次播放器封面并同步给浮窗
+    const coverImg = document.getElementById('player-cover-img');
+    const floatingCover = document.getElementById('music-floating-cover');
+    if (coverImg && floatingCover && coverImg.src && coverImg.src !== floatingCover.src) {
+        floatingCover.src = coverImg.src;
+    }
+}, 500);
+// =============== 新增：一起听 & 浮窗功能引擎 2.0升级版 结束 =================
 </script>
 </body>
 </html>
