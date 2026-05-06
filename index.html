@@ -2646,73 +2646,63 @@ let currentFriendId = null;
 let isMultiSelecting = false;
 
 // 【全自动存档魔法】升级版：加入防杀后台抢救机制与内存报警
-function performGlobalSave() {
+// === 无限存储补丁：IndexedDB 核心引擎 ===
+const dbName = "PluieInfiniteStorage";
+const storeName = "GlobalState";
+let db;
+
+const request = indexedDB.open(dbName, 1);
+request.onupgradeneeded = (e) => {
+    db = e.target.result;
+    if (!db.objectStoreNames.contains(storeName)) db.createObjectStore(storeName);
+};
+request.onsuccess = (e) => { db = e.target.result; };
+
+async function performGlobalSave() {
+    if (!db) return;
     try {
-        // 基础核心数据保存
-        localStorage.setItem('os_user_profile', JSON.stringify(userProfile));
-        localStorage.setItem('friend_list', JSON.stringify(friendList));
-        localStorage.setItem('os_config', JSON.stringify(config));
-        
-        // 1. 保存音乐列表和点赞状态
-        if (typeof playlist !== 'undefined') localStorage.setItem('os_playlist', JSON.stringify(playlist));
-        if (typeof momentLikes !== 'undefined') localStorage.setItem('os_moment_likes', JSON.stringify(momentLikes));
-        
-        // 2. 保存朋友圈和论坛推文的画面
         const momentsFeed = document.getElementById('moments-feed');
-        if (momentsFeed) localStorage.setItem('os_moments_html', momentsFeed.innerHTML);
         const forumFeed = document.getElementById('forum-feed');
-        if (forumFeed) localStorage.setItem('os_forum_html', forumFeed.innerHTML);
         const profilePostsFeed = document.getElementById('profile-posts-feed');
-        if (profilePostsFeed) localStorage.setItem('os_profile_posts_html', profilePostsFeed.innerHTML);
-
-        // 3. 保存主屏幕换过的壁纸
         const desktopBody = document.getElementById('desktop-body');
-        if (desktopBody && desktopBody.style.backgroundImage) {
-            localStorage.setItem('os_desktop_bg', desktopBody.style.backgroundImage);
-        }
-
-        // 4. 自动搜集并保存你更改的所有文本和桌面图标、照片
+        
         let customDOMState = {};
         const editableElements = document.querySelectorAll('[onclick*="editAnyText"], [onclick*="editWidgetText"], [onclick*="editEmoji"], [onclick*="changeAnyImage"], [onclick*="changeAvatar"], [onclick*="editProfilePart"], img[id*="icon-"], img[id*="avatar-"]');
-        
         editableElements.forEach((el, index) => {
             if (!el.id) el.id = 'auto_save_id_' + index;
-            if (el.tagName === 'IMG') {
-                customDOMState[el.id] = el.src;
-            } else {
+            if (el.tagName === 'IMG') customDOMState[el.id] = el.src;
+            else {
                 customDOMState[el.id + '_html'] = el.innerHTML;
                 if (el.style.backgroundImage) customDOMState[el.id + '_bg'] = el.style.backgroundImage;
             }
         });
 
-        // 额外强制保存一些特殊文字
-        const specialIds = ['widget-text', 'widget-date-display', 'widget-time-display', 'widget-text-btn', 'mock-msg-1', 'mock-status-1', 'mock-msg-2', 'mock-status-2', 'profile-following-count', 'profile-followers-count', 'profile-name', 'profile-handle', 'profile-bio'];
-        specialIds.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) customDOMState[id + '_html'] = el.innerHTML;
-        });
+        const fullData = {
+            userProfile,
+            friendList,
+            config,
+            playlist: typeof playlist !== 'undefined' ? playlist : [],
+            momentLikes: typeof momentLikes !== 'undefined' ? momentLikes : {},
+            momentsHtml: momentsFeed ? momentsFeed.innerHTML : "",
+            forumHtml: forumFeed ? forumFeed.innerHTML : "",
+            profilePostsHtml: profilePostsFeed ? profilePostsFeed.innerHTML : "",
+            desktopBg: desktopBody ? desktopBody.style.backgroundImage : "",
+            customDOMState
+        };
 
-        // 【终极修复1】：把最新状态永远缓存在内存里，供巡逻队读取
+        const tx = db.transaction(storeName, "readwrite");
+        tx.objectStore(storeName).put(fullData, "main_state");
         window.my_safe_dom_cache = customDOMState;
-
-        try {
-            localStorage.setItem('os_custom_dom_state', JSON.stringify(customDOMState));
-        } catch(err) {
-            // 【终极修复2】：彻底删掉那烦人的5MB弹窗！就算塞满了也不弹窗，用内存缓存强行顶着！
-        }
-
+        
+        // 只有在极少的基础配置更新时才同步到 localStorage，避免 5MB 报错
+        localStorage.setItem('os_config', JSON.stringify(config)); 
     } catch (e) {
-        // 捕获其余可能的错误，不再弹窗
+        console.warn("存储写入中...");
     }
 }
 
-// 1. 常规每隔1秒钟偷偷保存
-setInterval(performGlobalSave, 1000);
-
-// 2. 苹果系统专属救命稻草：在你上滑杀后台、切回桌面的那一瞬间，强制瞬间保存！
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') performGlobalSave();
-});
+setInterval(performGlobalSave, 1500);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') performGlobalSave(); });
 window.addEventListener('pagehide', performGlobalSave);
 
 // 【设置读取魔法】在页面刚加载时，自动把你以前填好的 API Key 和模型都填回去
