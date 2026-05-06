@@ -4424,26 +4424,31 @@ function deleteSelectedMessages() {
     cancelMultiSelect();
 }
 
-function sendUserMsg(){ 
-    if(!currentFriendId) return; 
+function sendUserMsg(){
+    if(!currentFriendId) return;
     const input = document.getElementById('chat-input');
-    const text = input.value.trim(); 
-    
+    const text = input.value.trim();
     // 【微信专属逻辑】：如果输入框是空的，那就什么都不做，绝对不触发AI。
     // 想让TA回复，只能去点击右侧那个专门的回复按键！
-    if(!text && !currentQuoteMsg) { 
-        return; 
-    } 
-    
+    if(!text && !currentQuoteMsg) { return; }
     let finalContent = text;
-    if (currentQuoteMsg) { 
-        finalContent = `[引用:${currentQuoteMsg}]\n${text}`; 
-        currentQuoteMsg = null; 
-        input.placeholder = "输入消息..."; 
-    } 
-    // 把消息扔进屏幕，但不呼唤AI，实现单纯的“连发” 
-    chatHistory.push({role:'user',content:finalContent}); 
-    input.value = ''; 
+    if (currentQuoteMsg) {
+        finalContent = `[引用:${currentQuoteMsg}]\n${text}`;
+        currentQuoteMsg = null;
+        input.placeholder = "命运为何不把我们绑紧一点";
+    }
+    // 把消息扔进屏幕，但不呼唤AI，实现单纯的“连发”
+    chatHistory.push({role:'user',content:finalContent});
+    input.value = '';
+    
+    // 【终极防杀后台补丁】：发消息瞬间强迫手机写进硬盘！
+    try {
+        localStorage.setItem('friend_list', JSON.stringify(friendList));
+        localStorage.getItem('friend_list'); // 强行触发硬盘读写
+    } catch(err) {
+        alert("存档失败！手机缓存已满(超过5MB)，请清理聊天记录或图片！");
+    }
+
     renderAllMessages(true);
 }
 async function triggerAI(){
