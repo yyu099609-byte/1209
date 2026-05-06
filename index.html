@@ -8523,34 +8523,60 @@ document.getElementById('new-song-audio-file').addEventListener('change', functi
 });
 
 async function saveNewSong() {
-    const title = document.getElementById('new-song-title').value.trim();
-    const artist = document.getElementById('new-song-artist').value.trim() || '未知歌手';
-    const audioUrl = document.getElementById('new-song-audio-url').value.trim();
-    const lrcText = document.getElementById('new-song-lrc-text').value.trim();
+    // 1. 获取输入框里的内容
+    const titleEl = document.getElementById('new-song-title');
+    const artistEl = document.getElementById('new-song-artist');
+    const audioUrlEl = document.getElementById('new-song-audio-url');
+    const lrcTextEl = document.getElementById('new-song-lrc-text');
 
-    if (!title) return alert("请填写歌曲名称");
-    if (!tempAudioBase64 && !audioUrl) return alert("请上传文件或填写链接");
+    const title = titleEl ? titleEl.value.trim() : "";
+    const artist = (artistEl && artistEl.value.trim()) ? artistEl.value.trim() : '未知歌手';
+    const audioUrl = audioUrlEl ? audioUrlEl.value.trim() : "";
+    const lrcText = lrcTextEl ? lrcTextEl.value.trim() : "";
 
-    const songId = "m_" + Date.now();
-    // 如果是文件，存入大仓库
-    if (tempAudioBase64) {
-        await musicDB.save(songId, tempAudioBase64);
+    // 2. 检查必填项
+    if (!title) {
+        alert("请填写歌曲名称哦！");
+        return;
+    }
+    if (!tempAudioBase64 && !audioUrl) {
+        alert("请上传音乐文件，或者在下方填写音乐链接！");
+        return;
     }
 
-    const newSong = {
-        title: title,
-        artist: artist,
-        cover: tempCoverBase64,
-        audioId: songId,
-        audioSrc: audioUrl || "", // 如果有URL优先用URL
-        lrc: lrcText
-    };
+    try {
+        // 3. 生成唯一的音乐身份证 ID
+        const songId = "m_" + Date.now();
 
-    playlist.push(newSong);
-    localStorage.setItem('os_playlist', JSON.stringify(playlist));
-    alert("添加成功！已存入大容量仓库。");
-    closeAddSongModal();
-    renderPlaylist();
+        // 4. 如果你上传了本地文件，就存进手机的大容量仓库里
+        if (tempAudioBase64) {
+            await musicDB.save(songId, tempAudioBase64);
+        }
+
+        // 5. 把这首歌的所有信息打包
+        const newSong = {
+            title: title,
+            artist: artist,
+            cover: tempCoverBase64 || "https://i.postimg.cc/Qx8Y1m3R/IMG-2980.jpg", // 没封面就用默认的
+            audioId: songId,
+            audioSrc: audioUrl || "", // 有链接就记录链接
+            lrc: lrcText
+        };
+
+        // 6. 把新歌塞进列表并保存到本地
+        playlist.push(newSong);
+        localStorage.setItem('os_playlist', JSON.stringify(playlist));
+
+        // 7. 成功提示并关闭弹窗，刷新列表显示
+        alert("🎵 添加成功！已存入音乐列表");
+        closeAddSongModal();
+        if (typeof renderPlaylist === 'function') {
+            renderPlaylist();
+        }
+    } catch (error) {
+        console.error("保存歌曲出错了:", error);
+        alert("添加失败了，请重试一次。");
+    }
 }
 // =========================================================
 
